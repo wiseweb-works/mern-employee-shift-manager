@@ -72,7 +72,13 @@ const UserCard = ({ userInfo }) => {
             {userInfo?.team}
           </span>
         </div>
-        <div className="flex-1 text-[10px] text-center font-medium text-green-500 bg-gray-50 px-4 py-0.5 rounded">
+        <div
+          className={`flex-1 text-[10px] text-center font-medium ${
+            userInfo?.workType == "full-time"
+              ? "text-green-500"
+              : "text-orange-500"
+          } bg-gray-50 px-4 py-0.5 rounded`}
+        >
           <span className="text-[12px] font-semibold capitalize">
             {userInfo?.workType}
           </span>

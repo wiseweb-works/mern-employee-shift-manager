@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router";
+import { Link, useNavigate, useParams } from "react-router";
 import DashboardLayout from "../../components/DashboardLayout";
 import Input from "../../Inputs/Input";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { validateEmail } from "../../utils/helper";
+import { LuArrowLeft } from "react-icons/lu";
 
 const EditUser = () => {
   const { id } = useParams();
@@ -95,7 +96,15 @@ const EditUser = () => {
   return (
     <DashboardLayout>
       <div className="lg:w-[80%] h-auto md:h-full m-auto mt-10 md:mt-0 flex flex-col justify-center">
-        <h3 className="text-xl font-semibold text-black">Edit a Team Member</h3>
+        <div className="flex justify-between">
+          <h3 className="text-xl font-semibold text-black">
+            Edit a Team Member
+          </h3>
+          <Link to="/admin/users" className="card-btn">
+            <LuArrowLeft className="text-base text-red-500" />
+            Turn Back!
+          </Link>
+        </div>
         <p className="text-sx text-slate-700 mt-[5px] mb-6">
           Please correct her/him details
         </p>

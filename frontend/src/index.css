@@ -60,6 +60,10 @@
   @apply bg-white p-4 rounded-xl shadow-md shadow-gray-100 border border-gray-200/50;
 }
 
+.select-boxx {
+  @apply border border-gray-300 bg-white px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition;
+}
+
 .sx-react-calendar-wrapper {
   width: 100%;
   height: 800px;

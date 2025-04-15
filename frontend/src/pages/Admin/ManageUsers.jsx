@@ -4,9 +4,12 @@ import { API_PATH } from "../../utils/apiPath";
 import axiosInstance from "../../utils/axiosInstance";
 import { useEffect, useState } from "react";
 import UserCard from "../../components/UserCards";
+import { RiResetLeftFill } from "react-icons/ri";
 
 const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
+  const [teamFilter, setTeamFilter] = useState("all");
+  const [workFilter, setWorkFilter] = useState("all");
 
   const getAllUsers = async () => {
     try {
@@ -19,6 +22,30 @@ const ManageUsers = () => {
     }
   };
 
+  const handleFilter = () => {
+    let filtered = allUsers;
+    if (teamFilter !== "all") {
+      filtered = filtered.filter((user) => user.team === teamFilter);
+    } else {
+      filtered = filtered.filter((user) => user.team);
+    }
+    if (workFilter !== "all") {
+      filtered = filtered.filter((user) => user.workType === workFilter);
+    } else {
+      filtered = filtered.filter((user) => user.workType);
+    }
+    return filtered;
+  };
+
+  const handleReset = () => {
+    setTeamFilter("all");
+    setWorkFilter("all");
+  };
+
+  useEffect(() => {
+    handleFilter();
+  }, [teamFilter, workFilter]);
+
   useEffect(() => {
     getAllUsers();
     return () => {};
@@ -29,14 +56,42 @@ const ManageUsers = () => {
       <div className="mt-5 mb-10">
         <div className="flex md:flex-row md:items-center justify-between">
           <h2 className="text-xl md:text-xl font-medium">Team Members</h2>
-          {/* <button className="flex md:flex download-btn"> */}
-          <button className="hidden download-btn">
-            <LuFileSpreadsheet className="text-lg" />
-            Empty Button
-          </button>
+
+          <div className="flex flex-col sm:flex-row gap-2">
+            <span className="select-boxx">{`Count: ${
+              handleFilter()?.length
+            }`}</span>
+            <select
+              className="select-boxx"
+              onChange={(e) => setTeamFilter(e.target.value)}
+              value={teamFilter}
+            >
+              <option value="all">Team</option>
+              <option value="sozialarbeiter">Sozialarbeiter</option>
+              <option value="sozialbetreuer">Sozialbetreuer</option>
+            </select>
+            <select
+              className="select-boxx"
+              onChange={(e) => setWorkFilter(e.target.value)}
+              value={workFilter}
+            >
+              <option value="all">Work Type</option>
+              <option value="full-time">Full-Time</option>
+              <option value="part-time">Part-Time</option>
+            </select>
+            {(teamFilter !== "all" || workFilter !== "all") && (
+              <button
+                className="flex md:flex download-btn shadow-sm"
+                onClick={handleReset}
+              >
+                <RiResetLeftFill className="text-lg" />
+                Reset
+              </button>
+            )}
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-          {allUsers?.map((user) => (
+          {handleFilter()?.map((user) => (
             <UserCard key={user._id} userInfo={user} />
           ))}
         </div>
