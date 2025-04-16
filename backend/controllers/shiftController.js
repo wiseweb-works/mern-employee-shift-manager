@@ -50,22 +50,25 @@ const getShiftById = async (req, res) => {
 
 const createShift = async (req, res) => {
   try {
-    const { employee, startTime, endTime, notes } = req.body;
+    const shiftsData = Array.isArray(req.body) ? req.body : [req.body];
 
-    if (!isValidISODate(startTime) || !isValidISODate(endTime)) {
-      return res
-        .status(400)
-        .json({ message: "startTime and endTime must valid ISODate object" });
+    const invalidShifts = shiftsData.filter(
+      ({ startTime, endTime }) =>
+        !isValidISODate(startTime) || !isValidISODate(endTime)
+    );
+
+    if (invalidShifts.length > 0) {
+      return res.status(400).json({
+        message:
+          "All startTime and endTime values must be valid ISODate objects",
+      });
     }
 
-    const shift = await Shift.create({
-      employee,
-      startTime,
-      endTime,
-      notes,
-    });
+    const createdShifts = await Shift.insertMany(shiftsData);
 
-    res.status(201).json({ message: "Shift created successfully", shift });
+    res
+      .status(201)
+      .json({ message: "Shifts created successfully", shifts: createdShifts });
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }

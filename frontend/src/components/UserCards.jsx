@@ -15,7 +15,6 @@ const UserCard = ({ userInfo }) => {
         const response = await axiosInstance.delete(
           API_PATH.USERS.DELETE_USER_BY_ID(userId)
         );
-        console.log(response);
         if (response.status === 200) {
           window.location.reload();
         }
@@ -29,7 +28,9 @@ const UserCard = ({ userInfo }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img
-            src={Avatar}
+            src={`https://avatar.iran.liara.run/public/${
+              Math.floor(Math.random() * 100) + 1
+            }`}
             alt={`Avatar`}
             className="w-12 h-12 rounded-full border-2 border-white object-cover"
           />

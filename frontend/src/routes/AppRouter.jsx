@@ -6,6 +6,7 @@ import Dashboard from "../pages/Admin/Dashboard";
 import CreateUsers from "../pages/Admin/CreateUser";
 import ManageUsers from "../pages/Admin/ManageUsers";
 import EditUser from "../pages/Admin/EditUser";
+import CreateShifts from "../pages/Admin/CreateShifts";
 
 const AppRouter = () => {
   return (
@@ -15,7 +16,7 @@ const AppRouter = () => {
           <Route path="/" element={<Root />} />
           <Route path="/login" element={<Login />} />
           <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/shifts" element={<div>SHIFTS</div>} />
+          <Route path="/admin/create-shifts" element={<CreateShifts />} />
           <Route path="/admin/create-user" element={<CreateUsers />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/users/:id" element={<EditUser />} />

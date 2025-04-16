@@ -15,9 +15,9 @@ export const SIDE_MENU_DATA = [
   },
   {
     id: "02",
-    label: "Manage Shifts",
+    label: "Create Shifts",
     icon: LuClipboardCheck,
-    path: "/admin/shifts",
+    path: "/admin/create-shifts",
   },
   {
     id: "03",

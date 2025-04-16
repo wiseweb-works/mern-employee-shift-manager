@@ -1,4 +1,4 @@
-export function generateShifts() {
+function createMockData(allUsers) {
   const today = new Date();
   const startDay = new Date(today.getFullYear(), today.getMonth(), 1);
   const DAYS = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
@@ -7,22 +7,22 @@ export function generateShifts() {
     { name: "Öğlen", startHour: 14, endHour: 20 },
   ];
   const MAX_SHIFTS_PER_PERSON = 21;
-  const TOTAL_BETREUER = 14;
-  const TOTAL_ARBEITER = 7;
 
-  const people = [
-    ...Array.from({ length: TOTAL_BETREUER }, (_, i) => ({
-      name: `Person ${i + 1}`,
-      calendarId: "sozialbetreuer",
-    })),
-    ...Array.from({ length: TOTAL_ARBEITER }, (_, i) => ({
-      name: `Person ${i + 1 + TOTAL_BETREUER}`,
-      calendarId: "sozialarbeiter",
-    })),
-  ];
+  const people = allUsers.map((user) => ({
+    id: user._id,
+    name: user.name,
+    calendarId: user.team,
+  }));
 
-  const betreuer = people.filter((p) => p.calendarId === "sozialbetreuer");
-  const arbeiter = people.filter((p) => p.calendarId === "sozialarbeiter");
+  const betreuer = shuffleArray(
+    people.filter((p) => p.calendarId === "sozialbetreuer")
+  );
+  const arbeiter = shuffleArray(
+    people.filter((p) => p.calendarId === "sozialarbeiter")
+  );
+
+  const betreuerIndex = { value: 0 };
+  const arbeiterIndex = { value: 0 };
 
   const shiftCount = {};
   people.forEach((p) => {
@@ -38,19 +38,22 @@ export function generateShifts() {
     const assignedToday = new Set();
 
     for (let shift of SHIFTS) {
-      const availableBetreuer = betreuer.filter(
-        (p) =>
-          shiftCount[p.name] < MAX_SHIFTS_PER_PERSON &&
-          !assignedToday.has(p.name)
+      const selectedBetreuer = selectSequential(
+        betreuer,
+        betreuerIndex,
+        4,
+        assignedToday,
+        shiftCount,
+        MAX_SHIFTS_PER_PERSON
       );
-      const selectedBetreuer = getRandom(availableBetreuer, 4);
-
-      const availableArbeiter = arbeiter.filter(
-        (p) =>
-          shiftCount[p.name] < MAX_SHIFTS_PER_PERSON &&
-          !assignedToday.has(p.name)
+      const selectedArbeiter = selectSequential(
+        arbeiter,
+        arbeiterIndex,
+        2,
+        assignedToday,
+        shiftCount,
+        MAX_SHIFTS_PER_PERSON
       );
-      const selectedArbeiter = getRandom(availableArbeiter, 2);
 
       const selected = [...selectedBetreuer, ...selectedArbeiter];
 
@@ -65,6 +68,7 @@ export function generateShifts() {
         allShifts.push({
           id: idCounter++,
           title: person.name,
+          uid: person.id,
           start: formatDate(start),
           end: formatDate(end),
           calendarId: person.calendarId,
@@ -76,39 +80,41 @@ export function generateShifts() {
   return allShifts;
 }
 
-// async function fetchPeopleData() {
-//   try {
-//     // API çağrısını yap
-//     const response = await fetch("https://your-api-endpoint.com/people");
-//     if (!response.ok) {
-//       throw new Error("API isteği başarısız oldu");
-//     }
+function shuffleArray(arr) {
+  return arr.slice().sort(() => 0.5 - Math.random());
+}
 
-//     // API'den gelen veriyi JSON'a çevir
-//     const data = await response.json();
+function selectSequential(
+  arr,
+  indexObj,
+  count,
+  assignedToday,
+  shiftCount,
+  maxShifts
+) {
+  const result = [];
+  let tries = 0;
 
-//     // Veriyi istediğiniz formata dönüştürün
-//     return data.map((person, index) => ({
-//       name: person.name,
-//       calendarId: person.calendarId,
-//     }));
-//   } catch (error) {
-//     console.error("Veri çekme hatası:", error);
-//     return []; // Hata durumunda boş bir dizi döndür
-//   }
-// }
+  while (result.length < count && tries < arr.length * 2) {
+    const person = arr[indexObj.value];
+    indexObj.value = (indexObj.value + 1) % arr.length;
 
-function getRandom(arr, n) {
-  const shuffled = arr.slice().sort(() => 0.5 - Math.random());
-  return shuffled.slice(0, Math.min(n, shuffled.length));
+    if (
+      shiftCount[person.name] < maxShifts &&
+      !assignedToday.has(person.name)
+    ) {
+      result.push(person);
+      assignedToday.add(person.name);
+    }
+
+    tries++;
+  }
+
+  return result;
 }
 
 function formatDate(date) {
   return date.toISOString().replace("T", " ").substring(0, 16);
 }
-
-const createMockData = () => {
-  return generateShifts();
-};
 
 export default createMockData;

@@ -1,19 +1,10 @@
 import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
-import {
-  viewWeek,
-  viewDay,
-  viewMonthGrid,
-  viewMonthAgenda,
-} from "@schedule-x/calendar";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import "@schedule-x/theme-default/dist/index.css";
 import moment from "moment";
-import createMockData from "../helpers/createMockData";
 
-const eventss = createMockData();
-
-const Calendar = () => {
+const Calendar = ({ events, setEvents, views }) => {
   const today = moment().format("YYYY-MM-DD");
   const calendar = useCalendarApp({
     calendars: {
@@ -46,17 +37,17 @@ const Calendar = () => {
     },
     locale: "de-DE",
     selectedDate: today,
-    views: [viewMonthGrid],
+    views: views,
     skipValidation: true,
     monthGridOptions: {
       nEventsPerDay: 16,
     },
     showWeekNumbers: true,
     plugins: [createEventModalPlugin(), createDragAndDropPlugin()],
-    events: eventss,
+    events: events,
     callbacks: {
       onEventUpdate(updatedEvent) {
-        console.log("onEventUpdate", updatedEvent);
+        setEvents([...events, updatedEvent]);
       },
       onEventClick(calendarEvent) {
         console.log("onEventClick", calendarEvent);
