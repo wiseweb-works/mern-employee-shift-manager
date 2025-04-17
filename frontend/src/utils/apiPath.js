@@ -18,5 +18,7 @@ export const API_PATH = {
     CREATE_SHIFTS: "/api/shifts/",
     UPDATE_SHIFTS: (shiftId) => `/api/shifts/${shiftId}`,
     DELETE_SHIFTS: (shiftId) => `/api/shifts/${shiftId}`,
+    DELETE_SHIFTS_BY_MONTH: (month, year) =>
+      `/api/shifts?month=${month}&year=${year}`,
   },
 };

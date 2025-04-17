@@ -13,6 +13,7 @@ const EditUser = () => {
   const [email, setEmail] = useState("");
   const [team, setTeam] = useState("");
   const [workType, setWorkType] = useState("");
+  const [isActive, setIsActive] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -30,6 +31,7 @@ const EditUser = () => {
         setEmail(user.email);
         setTeam(user.team);
         setWorkType(user.workType);
+        setIsActive(user.isActive);
       }
     } catch (error) {
       console.error("Error fetching user:", error);
@@ -71,6 +73,7 @@ const EditUser = () => {
           email,
           team,
           workType,
+          isActive,
         }
       );
 
@@ -154,6 +157,21 @@ const EditUser = () => {
                   <option value="part-time">Part-Time</option>
                 </select>
               </div>
+            </div>
+          </div>
+
+          <div>
+            <label className="text-[13px] text-slate-800">Active User</label>
+            <div className="input-box">
+              <select
+                value={isActive}
+                onChange={(e) => setIsActive(e.target.value)}
+                className="w-full bg-transparent outline-none"
+              >
+                <option value="">Please Select</option>
+                <option value={true}>Active</option>
+                <option value={false}>Deactive</option>
+              </select>
             </div>
           </div>
           {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}

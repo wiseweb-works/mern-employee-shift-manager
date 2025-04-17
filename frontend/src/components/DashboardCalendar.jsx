@@ -37,6 +37,19 @@ const DashboardCalendar = ({
           container: "#a24258",
         },
       },
+      partTime: {
+        colorName: "personal",
+        lightColors: {
+          main: "#f9d71c",
+          container: "#fff5aa",
+          onContainer: "#594800",
+        },
+        darkColors: {
+          main: "#fff5c0",
+          onContainer: "#fff5de",
+          container: "#a29742",
+        },
+      },
     },
     locale: "de-DE",
     selectedDate: day,

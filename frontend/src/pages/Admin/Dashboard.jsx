@@ -55,7 +55,10 @@ const Dashboard = () => {
           start: formatToLocalTime(shift.start),
           end: formatToLocalTime(shift.end),
           title: shift.employee.name,
-          calendarId: shift.employee.team,
+          calendarId:
+            shift.employee.workType === "part-time"
+              ? "partTime"
+              : shift.employee.team,
           uid: shift.employee._id,
         }));
         console.log(formattedShiftDataArray);

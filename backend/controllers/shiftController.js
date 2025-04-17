@@ -7,7 +7,10 @@ const getShifts = async (req, res) => {
     let count;
 
     if (req.user.role === "admin") {
-      shifts = await Shift.find().populate("employee", "name email team");
+      shifts = await Shift.find().populate(
+        "employee",
+        "name email team workType"
+      );
       count = await Shift.countDocuments();
     } else {
       shifts = await Shift.find({

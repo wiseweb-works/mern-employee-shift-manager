@@ -40,6 +40,13 @@ const updateUserById = async (req, res) => {
     user.team = req.body.team || user.team;
     user.workType = req.body.workType || user.workType;
 
+    if (req.body.isActive === "true") {
+    } else if (req.body.isActive === "false") {
+      user.isActive = false;
+    } else {
+      user.isActive = user.isActive;
+    }
+
     const updatedUser = await user.save();
     res.json({
       message: "User updated successfully",
