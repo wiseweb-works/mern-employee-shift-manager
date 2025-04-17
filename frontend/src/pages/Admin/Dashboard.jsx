@@ -4,36 +4,70 @@ import DashboardLayout from "../../components/DashboardLayout";
 import { LuArrowRight } from "react-icons/lu";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import moment from "moment";
-import Calendar from "../../components/Calendar";
+import DashboardCalendar from "../../components/DashboardCalendar";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import createMockData from "../../helpers/createMockData";
 import {
   viewWeek,
   viewDay,
   viewMonthGrid,
   viewMonthAgenda,
 } from "@schedule-x/calendar";
+import ToggleSwitch from "../../components/ToogleSwitch";
+import { formatToLocalTime } from "../../utils/formatToLocalTime";
 
 const Dashboard = () => {
   // useUserAuth();
 
   const [events, setEvents] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
+  const [enabled, setEnabled] = useState(false);
 
   const { user } = useContext(UserContext);
 
-  const getAllUsers = async () => {
-    try {
-      const result = await axiosInstance.get(API_PATH.USERS.GET_ALL_USERS);
-      if (result.data?.users?.length > 0) {
-        setEvents(createMockData(result.data.users));
+  const handleShiftUpdate = async (updated) => {
+    if (enabled) {
+      try {
+        const response = await axiosInstance.put(
+          API_PATH.SHIFTS.UPDATE_SHIFTS(updated._id),
+          { start: updated.start, end: updated.end }
+        );
+        if (response?.status === 200) {
+          console.log("Shift Updated Succesfully");
+          getAllShifts();
+        } else {
+          console.log(response);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {}
+    }
+  };
+
+  const getAllShifts = async () => {
+    try {
+      const result = await axiosInstance.get(API_PATH.SHIFTS.GET_SHIFTS);
+      if (result?.data?.shifts?.length > 0) {
+        console.log(result.data.shifts);
+        const formattedShiftDataArray = result.data.shifts.map((shift) => ({
+          ...shift,
+          id: shift._id,
+          start: formatToLocalTime(shift.start),
+          end: formatToLocalTime(shift.end),
+          title: shift.employee.name,
+          calendarId: shift.employee.team,
+          uid: shift.employee._id,
+        }));
+        console.log(formattedShiftDataArray);
+        setEvents(formattedShiftDataArray);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    getAllUsers();
+    getAllShifts();
     return () => {};
   }, []);
 
@@ -66,23 +100,23 @@ const Dashboard = () => {
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="text-lg">Recent Shifts</h5>
-              <button
-                className="card-btn"
-                onClick={() => window.location.reload()}
-              >
-                Sayfayı Yenile
-              </button>
-              <button className="card-btn">Shiftleri Kaydet</button>
-              <button className="card-btn">
-                See All <LuArrowRight className="text-base" />
-              </button>
+              <ToggleSwitch enabled={enabled} setEnabled={setEnabled} />
             </div>
             <div className="mt-4">
-              {events?.length > 0 && (
-                <Calendar
+              {events?.length > 0 && !enabled && (
+                <DashboardCalendar
                   events={events}
                   setEvents={setEvents}
                   views={[viewMonthAgenda]}
+                />
+              )}
+
+              {events?.length > 0 && enabled && (
+                <DashboardCalendar
+                  events={events}
+                  setEvents={setEvents}
+                  views={[viewMonthGrid, viewDay]}
+                  handleShiftUpdate={handleShiftUpdate}
                 />
               )}
             </div>

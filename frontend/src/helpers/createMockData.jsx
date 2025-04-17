@@ -1,11 +1,26 @@
-function createMockData(allUsers) {
-  const today = new Date();
-  const startDay = new Date(today.getFullYear(), today.getMonth(), 1);
-  const DAYS = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+function createMockData(allUsers, selectedDay) {
+  selectedDay = new Date(selectedDay);
+  const startDay = new Date(
+    selectedDay.getFullYear(),
+    selectedDay.getMonth(),
+    1
+  );
+  const DAYS = new Date(
+    selectedDay.getFullYear(),
+    selectedDay.getMonth() + 1,
+    0
+  ).getDate();
   const SHIFTS = [
-    { name: "Sabah", startHour: 8, endHour: 14 },
-    { name: "Öğlen", startHour: 14, endHour: 20 },
+    { name: "Sabah", startHour: 8, startMinute: 0, endHour: 16, endMinute: 30 },
+    {
+      name: "Öğlen",
+      startHour: 13,
+      startMinute: 30,
+      endHour: 22,
+      endMinute: 0,
+    },
   ];
+
   const MAX_SHIFTS_PER_PERSON = 21;
 
   const people = allUsers.map((user) => ({
@@ -62,8 +77,12 @@ function createMockData(allUsers) {
         assignedToday.add(person.name);
 
         const shiftDate = new Date(date);
-        const start = new Date(shiftDate.setHours(shift.startHour, 0, 0, 0));
-        const end = new Date(shiftDate.setHours(shift.endHour, 0, 0, 0));
+        const start = new Date(
+          shiftDate.setHours(shift.startHour, shift.startMinute, 0, 0)
+        );
+        const end = new Date(
+          shiftDate.setHours(shift.endHour, shift.endMinute, 0, 0)
+        );
 
         allShifts.push({
           id: idCounter++,

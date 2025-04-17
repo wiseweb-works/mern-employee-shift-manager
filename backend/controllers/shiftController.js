@@ -1,9 +1,5 @@
 const Shift = require("../models/Shift.Model");
-
-const isValidISODate = (value) => {
-  const date = new Date(value);
-  return !isNaN(date.getTime());
-};
+const moment = require("moment-timezone");
 
 const getShifts = async (req, res) => {
   try {
@@ -11,7 +7,7 @@ const getShifts = async (req, res) => {
     let count;
 
     if (req.user.role === "admin") {
-      shifts = await Shift.find().populate("employee", "name email");
+      shifts = await Shift.find().populate("employee", "name email team");
       count = await Shift.countDocuments();
     } else {
       shifts = await Shift.find({
@@ -50,17 +46,15 @@ const getShiftById = async (req, res) => {
 
 const createShift = async (req, res) => {
   try {
-    const shiftsData = Array.isArray(req.body) ? req.body : [req.body];
+    let shiftsData = Array.isArray(req.body) ? req.body : [req.body];
 
     const invalidShifts = shiftsData.filter(
-      ({ startTime, endTime }) =>
-        !isValidISODate(startTime) || !isValidISODate(endTime)
+      ({ start, end }) => !isValidISODate(start) || !isValidISODate(end)
     );
 
     if (invalidShifts.length > 0) {
       return res.status(400).json({
-        message:
-          "All startTime and endTime values must be valid ISODate objects",
+        message: "All start and end values must be valid ISODate objects",
       });
     }
 
@@ -82,17 +76,16 @@ const updateShift = async (req, res) => {
     }
 
     shift.employee = req.body.employee || shift.employee;
-    shift.startTime = req.body.startTime || shift.startTime;
-    shift.endTime = req.body.endTime || shift.endTime;
+    shift.start = req.body.start || shift.start;
+    shift.end = req.body.end || shift.end;
     shift.notes = req.body.notes || shift.notes;
 
-    if (req.body.startTime || req.body.endTime) {
-      if (!isValidISODate(startTime) || !isValidISODate(endTime)) {
+    if (req.body.start || req.body.end) {
+      if (!isValidISODate(shift.start) || !isValidISODate(shift.end)) {
         return res
           .status(400)
-          .json({ message: "startTime and endTime must valid ISODate object" });
+          .json({ message: "start and end must valid ISODate object" });
       }
-      shift.employee = req.body.employee;
     }
 
     const updatedShift = await shift.save();
@@ -116,10 +109,42 @@ const deleteShift = async (req, res) => {
   }
 };
 
+const deleteShiftsByMonth = async (req, res) => {
+  try {
+    const { year, month } = req.query;
+
+    if (!year || !month) {
+      return res
+        .status(400)
+        .json({ message: "year ve month parameters is required" });
+    }
+
+    const startOfMonth = moment(`${year}-${month}-01`)
+      .startOf("month")
+      .toDate();
+    const endOfMonth = moment(`${year}-${month}-01`).endOf("month").toDate();
+
+    const result = await Shift.deleteMany({
+      start: { $gte: startOfMonth, $lte: endOfMonth },
+    });
+
+    res.json({
+      message: `${result.deletedCount} shifts deleted`,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
 module.exports = {
   getShifts,
   getShiftById,
   createShift,
   updateShift,
   deleteShift,
+  deleteShiftsByMonth,
+};
+
+const isValidISODate = (isoString) => {
+  return moment(isoString, moment.ISO_8601, true).isValid();
 };

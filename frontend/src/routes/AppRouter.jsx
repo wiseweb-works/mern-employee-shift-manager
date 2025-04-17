@@ -7,6 +7,7 @@ import CreateUsers from "../pages/Admin/CreateUser";
 import ManageUsers from "../pages/Admin/ManageUsers";
 import EditUser from "../pages/Admin/EditUser";
 import CreateShifts from "../pages/Admin/CreateShifts";
+import EditModal from "../components/EditModal";
 
 const AppRouter = () => {
   return (
@@ -20,6 +21,7 @@ const AppRouter = () => {
           <Route path="/admin/create-user" element={<CreateUsers />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/users/:id" element={<EditUser />} />
+          <Route path="/test/edit-modal" element={<EditModal />} />
 
           {/* <Route path="/signup" element={<SignUp />} /> */}
         </Routes>

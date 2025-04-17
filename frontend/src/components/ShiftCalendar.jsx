@@ -2,10 +2,13 @@ import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
 import { createEventModalPlugin } from "@schedule-x/event-modal";
 import { createDragAndDropPlugin } from "@schedule-x/drag-and-drop";
 import "@schedule-x/theme-default/dist/index.css";
-import moment from "moment";
 
-const Calendar = ({ events, setEvents, views }) => {
-  const today = moment().format("YYYY-MM-DD");
+const ShiftCalendar = ({
+  events,
+  views,
+  selectedDay = null,
+  handleShiftUpdate,
+}) => {
   const calendar = useCalendarApp({
     calendars: {
       sozialarbeiter: {
@@ -36,23 +39,27 @@ const Calendar = ({ events, setEvents, views }) => {
       },
     },
     locale: "de-DE",
-    selectedDate: today,
+    selectedDate: selectedDay,
     views: views,
     skipValidation: true,
     monthGridOptions: {
       nEventsPerDay: 16,
     },
-    showWeekNumbers: true,
-    plugins: [createEventModalPlugin(), createDragAndDropPlugin()],
-    events: events,
+    dayBoundaries: {
+      start: "07:00",
+      end: "23:00",
+    },
     callbacks: {
       onEventUpdate(updatedEvent) {
-        setEvents([...events, updatedEvent]);
+        handleShiftUpdate(updatedEvent);
       },
       onEventClick(calendarEvent) {
         console.log("onEventClick", calendarEvent);
       },
     },
+    showWeekNumbers: true,
+    plugins: [createEventModalPlugin(), createDragAndDropPlugin()],
+    events: events,
   });
   return (
     <div>
@@ -61,4 +68,4 @@ const Calendar = ({ events, setEvents, views }) => {
   );
 };
 
-export default Calendar;
+export default ShiftCalendar;

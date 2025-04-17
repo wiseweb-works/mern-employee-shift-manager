@@ -6,13 +6,15 @@ import { UserContext } from "../../context/UserContext";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
-import Calendar from "../../components/Calendar";
+
 import {
   viewWeek,
   viewDay,
   viewMonthGrid,
   viewMonthAgenda,
 } from "@schedule-x/calendar";
+import ShiftCalendar from "../../components/ShiftCalendar";
+import moment from "moment";
 
 const CreateShifts = () => {
   const [isOpen, setIsOpen] = useState(
@@ -22,6 +24,24 @@ const CreateShifts = () => {
   const [events, setEvents] = useState([]);
 
   const { user } = useContext(UserContext);
+
+  const selectedDay = moment()
+    .add(1, "months")
+    .startOf("month")
+    .format("YYYY-MM-DD");
+
+  const handleShiftUpdate = (updated) => {
+    const filtered = events.filter((event) => event.id !== updated.id);
+    setEvents([...filtered, updated]);
+  };
+
+  const shiftSave = async () => {
+    const isConfirmed = window.confirm(
+      "This will delete the existing shifs and rewrite them as you choose!"
+    );
+    if (isConfirmed) {
+    }
+  };
 
   const handleToogle = () => {
     setIsOpen(!isOpen);
@@ -33,7 +53,7 @@ const CreateShifts = () => {
       const result = await axiosInstance.get(API_PATH.USERS.GET_ALL_USERS);
       if (result.data?.users?.length > 0) {
         setAllUsers(result.data.users);
-        setEvents(createMockData(result.data.users));
+        setEvents(createMockData(result.data.users, selectedDay));
       }
     } catch (error) {}
   };
@@ -49,14 +69,14 @@ const CreateShifts = () => {
         <div className="md:col-span-2">
           <div className="card">
             <div className="flex items-center justify-between">
-              <h5 className="text-lg">Recent Shifts</h5>
+              <h5 className="text-lg">Create Shifts</h5>
               <button
                 className="card-btn"
                 onClick={() => window.location.reload()}
               >
                 Sayfayı Yenile
               </button>
-              <button className="card-btn">Shiftleri Kaydet</button>
+              <button className="card-btn">Save Shifts</button>
               <button className="card-btn" onClick={handleToogle}>
                 {isOpen ? "Hide" : "Show"}
                 {isOpen ? (
@@ -97,7 +117,7 @@ const CreateShifts = () => {
                           events
                             .filter((event) => event.uid === user._id)
                             .filter((shift) =>
-                              String(shift.end).endsWith("20:00")
+                              String(shift.end).endsWith("22:00")
                             ).length
                         }
                         totalCount={
@@ -110,11 +130,13 @@ const CreateShifts = () => {
                 ))}
             </div>
             <div className="mt-4">
-              {events?.length > 0 && (
-                <Calendar
+              {events?.length > 0 && selectedDay && (
+                <ShiftCalendar
                   events={events}
                   setEvents={setEvents}
                   views={[viewMonthGrid, viewDay]}
+                  selectedDay={selectedDay}
+                  handleShiftUpdate={handleShiftUpdate}
                 />
               )}
             </div>

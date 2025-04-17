@@ -9,8 +9,8 @@ const ShiftSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    startTime: { type: Date, required: true },
-    endTime: { type: Date, required: true },
+    start: { type: Date, required: true },
+    end: { type: Date, required: true },
     notes: String,
   },
   { timestamps: true }

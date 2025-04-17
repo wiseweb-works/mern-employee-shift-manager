@@ -79,3 +79,8 @@
 .sx__month-agenda-event {
   margin-top: 8px;
 }
+
+:root {
+  --sx-week-grid-hour-height: 46.5px !important;
+  --sx-week-grid-height: 700px !important;
+}
