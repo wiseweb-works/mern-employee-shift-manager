@@ -8,6 +8,8 @@ const DashboardCalendar = ({
   views,
   day = null,
   handleShiftUpdate,
+  editMode,
+  handleClick,
 }) => {
   const calendar = useCalendarApp({
     calendars: {
@@ -67,10 +69,10 @@ const DashboardCalendar = ({
     events: events,
     callbacks: {
       onEventUpdate(updatedEvent) {
-        handleShiftUpdate(updatedEvent);
+        if (editMode) handleShiftUpdate(updatedEvent);
       },
       onEventClick(calendarEvent) {
-        console.log("onEventClick", calendarEvent);
+        if (editMode) handleClick(calendarEvent);
       },
     },
   });

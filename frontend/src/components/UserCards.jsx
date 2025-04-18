@@ -1,4 +1,3 @@
-import Avatar from "../assets/arbeiterAvatar.jpg";
 import { MdDelete } from "react-icons/md";
 import { MdEdit } from "react-icons/md";
 import axiosInstance from "../utils/axiosInstance";
@@ -28,9 +27,7 @@ const UserCard = ({ userInfo }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img
-            src={`https://avatar.iran.liara.run/public/${
-              Math.floor(Math.random() * 100) + 1
-            }`}
+            src={`/avatars/avatar_${Math.floor(Math.random() * 100) + 1}.png`}
             alt={`Avatar`}
             className="w-12 h-12 rounded-full border-2 border-white object-cover"
           />
@@ -84,7 +81,11 @@ const UserCard = ({ userInfo }) => {
             {userInfo?.workType}
           </span>
         </div>
-        <div className="flex-1 text-[10px] text-center font-medium text-violet-500 bg-gray-50 px-4 py-0.5 rounded">
+        <div
+          className={`flex-1 text-[10px] text-center font-medium ${
+            userInfo?.isActive ? `text-violet-500` : "text-pink-900"
+          }  bg-gray-50 px-4 py-0.5 rounded`}
+        >
           <span className="text-[12px] font-semibold capitalize">
             {userInfo?.isActive ? `Active` : "Deactive"}
           </span>

@@ -1,6 +1,5 @@
-import { useContext, useState } from "react";
-import { UserContext } from "../../context/UserContext";
-import { Link, useNavigate } from "react-router";
+import { useState } from "react";
+import { useNavigate } from "react-router";
 import { validateEmail } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
@@ -113,13 +112,6 @@ const CreateUsers = () => {
           <button type="submit" className="btn-primary">
             SIGN UP
           </button>
-
-          <p className="text-[13px] text-slate-800 mt-3">
-            Already have an account?{" "}
-            <Link className="font-medium text-primary underline" to="/login">
-              Login
-            </Link>
-          </p>
         </form>
       </div>
     </DashboardLayout>

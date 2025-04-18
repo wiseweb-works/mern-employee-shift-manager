@@ -15,18 +15,21 @@ import {
 } from "@schedule-x/calendar";
 import ToggleSwitch from "../../components/ToogleSwitch";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
+import EditModal from "../../components/EditModal";
 
 const Dashboard = () => {
   // useUserAuth();
 
   const [events, setEvents] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
-  const [enabled, setEnabled] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [initialData, setInitialData] = useState("");
+  const [modalOpen, setModalOpen] = useState(false);
 
   const { user } = useContext(UserContext);
 
   const handleShiftUpdate = async (updated) => {
-    if (enabled) {
+    if (editMode) {
       try {
         const response = await axiosInstance.put(
           API_PATH.SHIFTS.UPDATE_SHIFTS(updated._id),
@@ -44,11 +47,15 @@ const Dashboard = () => {
     }
   };
 
+  const handleClick = (entry) => {
+    setInitialData(entry);
+    setModalOpen(true);
+  };
+
   const getAllShifts = async () => {
     try {
       const result = await axiosInstance.get(API_PATH.SHIFTS.GET_SHIFTS);
       if (result?.data?.shifts?.length > 0) {
-        console.log(result.data.shifts);
         const formattedShiftDataArray = result.data.shifts.map((shift) => ({
           ...shift,
           id: shift._id,
@@ -60,8 +67,8 @@ const Dashboard = () => {
               ? "partTime"
               : shift.employee.team,
           uid: shift.employee._id,
+          description: shift.notes,
         }));
-        console.log(formattedShiftDataArray);
         setEvents(formattedShiftDataArray);
       }
     } catch (error) {
@@ -103,29 +110,38 @@ const Dashboard = () => {
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="text-lg">Recent Shifts</h5>
-              <ToggleSwitch enabled={enabled} setEnabled={setEnabled} />
+              <ToggleSwitch editMode={editMode} setEditMode={setEditMode} />
             </div>
             <div className="mt-4">
-              {events?.length > 0 && !enabled && (
+              {events?.length > 0 && !editMode && (
                 <DashboardCalendar
                   events={events}
                   setEvents={setEvents}
                   views={[viewMonthAgenda]}
+                  editMode={editMode}
                 />
               )}
 
-              {events?.length > 0 && enabled && (
+              {events?.length > 0 && editMode && (
                 <DashboardCalendar
                   events={events}
                   setEvents={setEvents}
                   views={[viewMonthGrid, viewDay]}
                   handleShiftUpdate={handleShiftUpdate}
+                  handleClick={handleClick}
+                  editMode={editMode}
                 />
               )}
             </div>
           </div>
         </div>
       </div>
+
+      <EditModal
+        modalOpen={modalOpen}
+        setModalOpen={setModalOpen}
+        initialData={initialData}
+      />
     </DashboardLayout>
   );
 };

@@ -10,6 +10,7 @@ const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
   const [teamFilter, setTeamFilter] = useState("all");
   const [workFilter, setWorkFilter] = useState("all");
+  const [activeFilter, setActiveFilter] = useState("all");
 
   const getAllUsers = async () => {
     try {
@@ -34,17 +35,25 @@ const ManageUsers = () => {
     } else {
       filtered = filtered.filter((user) => user.workType);
     }
+    if (activeFilter === "active") {
+      filtered = filtered.filter((user) => user.isActive);
+    } else if (activeFilter === "deactive") {
+      filtered = filtered.filter((user) => !user.isActive);
+    } else {
+      filtered = filtered.filter((user) => user.isActive !== "");
+    }
     return filtered;
   };
 
   const handleReset = () => {
     setTeamFilter("all");
     setWorkFilter("all");
+    setActiveFilter("all");
   };
 
   useEffect(() => {
     handleFilter();
-  }, [teamFilter, workFilter]);
+  }, [teamFilter, workFilter, activeFilter]);
 
   useEffect(() => {
     getAllUsers();
@@ -78,6 +87,15 @@ const ManageUsers = () => {
               <option value="all">Work Type</option>
               <option value="full-time">Full-Time</option>
               <option value="part-time">Part-Time</option>
+            </select>
+            <select
+              className="select-boxx"
+              onChange={(e) => setActiveFilter(e.target.value)}
+              value={activeFilter}
+            >
+              <option value="all">Active/Deactive</option>
+              <option value="active">Active</option>
+              <option value="deactive">Deactive</option>
             </select>
             {(teamFilter !== "all" || workFilter !== "all") && (
               <button

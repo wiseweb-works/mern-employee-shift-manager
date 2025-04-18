@@ -108,6 +108,7 @@ const CreateShifts = () => {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6 mt-5">
               {isOpen &&
+                events.length > 0 &&
                 allUsers.map((user, index) => (
                   <div key={index} className="flex items-center gap-3">
                     <div
@@ -126,28 +127,7 @@ const CreateShifts = () => {
                       <p className="ml-2 capitalize">{user.team}</p>
                     </div>
 
-                    {
-                      <StatisticBar
-                        morningCount={
-                          events
-                            .filter((event) => event.uid === user._id)
-                            .filter((shift) =>
-                              String(shift.start).endsWith("08:00")
-                            ).length
-                        }
-                        nightCount={
-                          events
-                            .filter((event) => event.uid === user._id)
-                            .filter((shift) =>
-                              String(shift.end).endsWith("22:00")
-                            ).length
-                        }
-                        totalCount={
-                          events.filter((event) => event.uid === user._id)
-                            .length
-                        }
-                      />
-                    }
+                    {<StatisticBar events={events} user={user} />}
                   </div>
                 ))}
             </div>
