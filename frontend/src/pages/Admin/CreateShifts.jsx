@@ -13,7 +13,7 @@ import {
   viewMonthGrid,
   viewMonthAgenda,
 } from "@schedule-x/calendar";
-import ShiftCalendar from "../../components/ShiftCalendar";
+import ShiftCalendar from "../../components/Calendars/ShiftCalendar";
 import moment from "moment";
 
 const CreateShifts = () => {

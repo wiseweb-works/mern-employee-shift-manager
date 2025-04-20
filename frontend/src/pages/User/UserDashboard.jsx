@@ -1,56 +1,17 @@
 import { useContext, useEffect, useState } from "react";
-import { UserContext } from "../../context/UserContext";
 import DashboardLayout from "../../components/DashboardLayout";
-import { LuArrowRight } from "react-icons/lu";
-import { IoIosCloseCircleOutline } from "react-icons/io";
+import { UserContext } from "../../context/UserContext";
 import moment from "moment";
-import DashboardCalendar from "../../components/Calendars/DashboardCalendar";
+import { IoIosCloseCircleOutline } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import {
-  viewWeek,
-  viewDay,
-  viewMonthGrid,
-  viewMonthAgenda,
-} from "@schedule-x/calendar";
-import ToggleSwitch from "../../components/ToogleSwitch";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
-import EditModal from "../../components/EditModal";
+import UserCalendar from "../../components/Calendars/UserCalendar";
 
-const Dashboard = () => {
-  // useUserAuth();
-
-  const [events, setEvents] = useState([]);
-  const [isOpen, setIsOpen] = useState(true);
-  const [editMode, setEditMode] = useState(false);
-  const [initialData, setInitialData] = useState("");
-  const [modalOpen, setModalOpen] = useState(false);
-
+const UserDashboard = () => {
   const { user } = useContext(UserContext);
-
-  const handleShiftUpdate = async (updated) => {
-    if (editMode) {
-      try {
-        const response = await axiosInstance.put(
-          API_PATH.SHIFTS.UPDATE_SHIFTS(updated._id),
-          { start: updated.start, end: updated.end }
-        );
-        if (response?.status === 200) {
-          console.log("Shift Updated Succesfully");
-          getAllShifts();
-        } else {
-          console.log(response);
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  };
-
-  const handleClick = (entry) => {
-    setInitialData(entry);
-    setModalOpen(true);
-  };
+  const [isOpen, setIsOpen] = useState(true);
+  const [events, setEvents] = useState([]);
 
   const getAllShifts = async () => {
     try {
@@ -80,6 +41,8 @@ const Dashboard = () => {
     getAllShifts();
     return () => {};
   }, []);
+
+  console.log(events);
 
   return (
     <DashboardLayout activeMenu="Dashboard">
@@ -116,40 +79,15 @@ const Dashboard = () => {
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="text-lg">Recent Shifts</h5>
-              <ToggleSwitch editMode={editMode} setEditMode={setEditMode} />
             </div>
             <div className="mt-4">
-              {events?.length > 0 && !editMode && (
-                <DashboardCalendar
-                  events={events}
-                  setEvents={setEvents}
-                  views={[viewMonthAgenda]}
-                  editMode={editMode}
-                />
-              )}
-
-              {events?.length > 0 && editMode && (
-                <DashboardCalendar
-                  events={events}
-                  setEvents={setEvents}
-                  views={[viewMonthGrid, viewDay]}
-                  handleShiftUpdate={handleShiftUpdate}
-                  handleClick={handleClick}
-                  editMode={editMode}
-                />
-              )}
+              {events?.length > 0 && <UserCalendar events={events} />}
             </div>
           </div>
         </div>
       </div>
-
-      <EditModal
-        modalOpen={modalOpen}
-        setModalOpen={setModalOpen}
-        initialData={initialData}
-      />
     </DashboardLayout>
   );
 };
 
-export default Dashboard;
+export default UserDashboard;

@@ -1,0 +1,112 @@
+import { useContext, useState } from "react";
+import DashboardLayout from "../../components/DashboardLayout";
+import { UserContext } from "../../context/UserContext";
+import Input from "../../Inputs/Input";
+import axiosInstance from "../../utils/axiosInstance";
+import { API_PATH } from "../../utils/apiPath";
+import { useNavigate } from "react-router";
+
+const ChangePassword = () => {
+  const { user, clearUser } = useContext(UserContext);
+  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [error, setError] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
+  const handleSubmit = async (e) => {
+    setLoading(true);
+    e.preventDefault();
+
+    if (!password) {
+      setError("You need to enter your old password");
+      return;
+    }
+
+    if (!newPassword) {
+      setError("You need to enter your new password");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.put(
+        API_PATH.USERS.UPDATE_USER_PASSWORD,
+        {
+          password,
+          newPassword,
+        }
+      );
+      if (response.status === 200) {
+        handleLogout();
+      }
+    } catch (error) {
+      setError(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    clearUser();
+    navigate("/login");
+  };
+
+  return (
+    <DashboardLayout activeMenu="Change Password">
+      <div className="lg:w-[80%] h-auto md:h-full m-auto mt-10 md:mt-0 flex flex-col justify-center">
+        <div className="flex justify-between">
+          <h3 className="text-xl font-semibold text-black">
+            Change your Password
+          </h3>
+        </div>
+        <p className="text-sx text-slate-700 mt-[5px] mb-6">
+          To change your password please enter your old and new password.
+        </p>
+
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <Input
+              value={user?.name}
+              readonly
+              label="Full Name"
+              placeholder="John Doe"
+              type="text"
+            />
+            <Input
+              value={user?.email}
+              readonly
+              label="Email Address"
+              placeholder="john@example.com"
+              type="text"
+            />
+
+            <Input
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              label="Old Password"
+              placeholder="Please enter your old password"
+            />
+            <Input
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              type="password"
+              label="New Password"
+              placeholder="Please enter your new password"
+            />
+          </div>
+
+          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
+
+          <button type="submit" className="btn-primary" disabled={loading}>
+            UPDATE PASSWORD
+          </button>
+        </form>
+      </div>
+    </DashboardLayout>
+  );
+};
+
+export default ChangePassword;

@@ -10,6 +10,7 @@ export const API_PATH = {
     GET_ALL_USERS: "/api/users",
     GET_USER_BY_ID: (userId) => `/api/users/${userId}`,
     UPDATE_USER_BY_ID: (userId) => `/api/users/${userId}`,
+    UPDATE_USER_PASSWORD: "/api/users",
     DELETE_USER_BY_ID: (userId) => `/api/users/${userId}`,
   },
   SHIFTS: {

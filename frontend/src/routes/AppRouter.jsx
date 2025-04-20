@@ -7,7 +7,10 @@ import CreateUsers from "../pages/Admin/CreateUser";
 import ManageUsers from "../pages/Admin/ManageUsers";
 import EditUser from "../pages/Admin/EditUser";
 import CreateShifts from "../pages/Admin/CreateShifts";
-import EditModal from "../components/EditModal";
+import UserDashboard from "../pages/User/UserDashboard";
+import ViewStatistics from "../pages/User/ViewStatistics";
+import ChangePassword from "../pages/User/ChangePassword";
+import AdminStatistics from "../pages/Admin/AdminStatistics";
 
 const AppRouter = () => {
   return (
@@ -21,9 +24,11 @@ const AppRouter = () => {
           <Route path="/admin/create-user" element={<CreateUsers />} />
           <Route path="/admin/users" element={<ManageUsers />} />
           <Route path="/admin/users/:id" element={<EditUser />} />
-          <Route path="/test/edit-modal" element={<EditModal />} />
+          <Route path="/admin/statistics" element={<AdminStatistics />} />
 
-          {/* <Route path="/signup" element={<SignUp />} /> */}
+          <Route path="/user/dashboard" element={<UserDashboard />} />
+          <Route path="/user/statistics" element={<ViewStatistics />} />
+          <Route path="/user/change-password" element={<ChangePassword />} />
         </Routes>
       </BrowserRouter>
     </UserProvider>

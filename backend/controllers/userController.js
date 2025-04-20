@@ -64,6 +64,45 @@ const updateUserById = async (req, res) => {
   }
 };
 
+const updateUserPassword = async (req, res) => {
+  try {
+    const user = await User.findById(req.user._id);
+
+    const { password, newPassword } = req.body;
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (!password) {
+      return res.status(404).json({ message: "Password need to send" });
+    }
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "You send wrong password" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    user.password = hashedPassword;
+
+    const updatedUser = await user.save();
+    res.json({
+      message: "User password updated successfully",
+      user: {
+        _id: updatedUser._id,
+        name: updatedUser.name,
+        email: updatedUser.email,
+        team: updatedUser.team,
+        workType: updatedUser.workType,
+        isActive: updatedUser.isActive,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+
 const deleteUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
@@ -82,5 +121,6 @@ module.exports = {
   getUsers,
   getUserById,
   updateUserById,
+  updateUserPassword,
   deleteUserById,
 };

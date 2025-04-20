@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { SIDE_MENU_DATA, SIDE_MENU_USER_DATA } from "../utils/data";
 import { UserContext } from "../context/UserContext";
-import avatar from "../assets/avatar.jpg";
 
 const SideMenu = ({ activeMenu }) => {
   const { user, clearUser } = useContext(UserContext);
@@ -39,7 +38,7 @@ const SideMenu = ({ activeMenu }) => {
         <div className="relative">
           <img
             className="w-20 h-20 bg-slate-400 rounded-full object-cover"
-            src={avatar}
+            src="/avatars/avatar_12.png"
             alt="Profile Image"
           />
         </div>
