@@ -7,12 +7,11 @@ const AuthLayout = ({ children }) => {
         <h2 className="text-lg font-medium text-black">Shift Management APP</h2>
         {children}
       </div>
-      <div className="hidden md:flex w-[40vw] h-screen items-center bg-blue-50 bg-[url('/bgimg.jpg')] bg-cover bg-no-repeat bg-center overflow-hidden p-8">
-        <img
-          src={UI}
-          alt="ui-img"
-          className="shadow-inner shadow-black/20 rounded-md"
-        />
+      <div className="hidden  md:flex md:flex-col md:justify-center w-[40vw] h-screen items-center bg-blue-50 bg-[url('/bgimg.jpg')] bg-cover bg-no-repeat bg-center overflow-hidden p-8">
+        <p className="text-white text-2xl md:text-4xl font-semibold tracking-wide leading-snug drop-shadow-md">
+          SHIFT MANAGEMENT APP
+        </p>
+        <img src={UI} alt="ui-img" />
       </div>
     </div>
   );

@@ -94,7 +94,7 @@ const ViewStatistics = () => {
         <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="col-span-1 md:col-span-3 bg-white rounded-2xl shadow-md p-4">
             <h2 className="text-xl font-semibold mb-4">
-              Aylık Shift Özeti:
+              Monthly Shift Summary:
               <span className="text-red-500">
                 {" "}
                 {moment(selectedMonth).format("MM/yyyy")}
@@ -110,7 +110,7 @@ const ViewStatistics = () => {
               </button>
 
               <div className="bg-yellow-100 rounded-2xl p-4 shadow-md flex-3 ">
-                <p className="text-lg font-medium">Sabah Shiftleri</p>
+                <p className="text-lg font-medium">Morning Shifts</p>
                 <p className="text-3xl font-bold text-yellow-600">
                   {
                     filteredEvents.filter((event) =>
@@ -120,13 +120,13 @@ const ViewStatistics = () => {
                 </p>
               </div>
               <div className="bg-blue-100 rounded-2xl p-4 shadow-md flex-3 ">
-                <p className="text-lg font-medium">Toplam Shift</p>
+                <p className="text-lg font-medium">Total Shift</p>
                 <p className="text-3xl font-bold text-blue-600">
                   {filteredEvents.length}
                 </p>
               </div>
               <div className="bg-purple-100 rounded-2xl p-4 shadow-md flex-3">
-                <p className="text-lg font-medium">Akşam Shiftleri</p>
+                <p className="text-lg font-medium">Night Shifts</p>
                 <p className="text-3xl font-bold text-purple-600">
                   {
                     filteredEvents.filter((event) =>
@@ -146,7 +146,7 @@ const ViewStatistics = () => {
           </div>
 
           <div className="col-span-1 md:col-span-3 bg-white rounded-2xl shadow-md p-4">
-            <h2 className="text-xl font-semibold mb-4">Grafikler</h2>
+            <h2 className="text-xl font-semibold mb-4">Charts</h2>
             <div className="flex flex-col md:flex-row gap-4">
               <div className="w-full md:w-2/3 h-72">
                 <ResponsiveContainer width="100%" height="100%">
@@ -197,7 +197,7 @@ const ViewStatistics = () => {
           </div>
 
           <div className="col-span-1 md:col-span-3 bg-white rounded-2xl shadow-md p-4 overflow-auto">
-            <h2 className="text-xl font-semibold mb-4">Aylık Shift Tablosu</h2>
+            <h2 className="text-xl font-semibold mb-4">Monthly Shift Chart</h2>
             <UserShiftTable
               user={user}
               selectedMonth={selectedMonth}

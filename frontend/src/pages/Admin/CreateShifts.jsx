@@ -1,18 +1,12 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import StatisticBar from "../../components/StatisticBar";
 import createMockData from "../../helpers/createMockData";
-import { UserContext } from "../../context/UserContext";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
-import {
-  viewWeek,
-  viewDay,
-  viewMonthGrid,
-  viewMonthAgenda,
-} from "@schedule-x/calendar";
+import { viewDay, viewMonthGrid } from "@schedule-x/calendar";
 import ShiftCalendar from "../../components/Calendars/ShiftCalendar";
 import moment from "moment";
 
@@ -22,8 +16,6 @@ const CreateShifts = () => {
   );
   const [allUsers, setAllUsers] = useState([]);
   const [events, setEvents] = useState([]);
-
-  const { user } = useContext(UserContext);
 
   const selectedDay = moment()
     .add(1, "months")
@@ -43,20 +35,21 @@ const CreateShifts = () => {
       "This will delete the existing shifs and rewrite them as you choose!"
     );
     if (isConfirmed) {
-      const deleteResponse = await axiosInstance.delete(
-        API_PATH.SHIFTS.DELETE_SHIFTS_BY_MONTH(month, year)
-      );
-      if (deleteResponse.status === 200) {
-        const saveResponse = await axiosInstance.post(
-          API_PATH.SHIFTS.CREATE_SHIFTS,
-          [
+      try {
+        const deleteResponse = await axiosInstance.delete(
+          API_PATH.SHIFTS.DELETE_SHIFTS_BY_MONTH(month, year)
+        );
+        if (deleteResponse.status === 200) {
+          await axiosInstance.post(API_PATH.SHIFTS.CREATE_SHIFTS, [
             ...events.map((event) => ({
               employee: event.uid,
               start: event.start,
               end: event.end,
             })),
-          ]
-        );
+          ]);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   };
@@ -73,7 +66,9 @@ const CreateShifts = () => {
         setAllUsers(result.data.users);
         setEvents(createMockData(result.data.users, selectedDay));
       }
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {

@@ -11,7 +11,10 @@ const ShiftSchema = new mongoose.Schema(
     },
     start: { type: Date, required: true },
     end: { type: Date, required: true },
-    notes: String,
+    notes: {
+      type: String,
+      trim: true,
+    },
   },
   { timestamps: true }
 );

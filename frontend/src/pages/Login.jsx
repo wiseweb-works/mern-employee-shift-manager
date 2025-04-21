@@ -43,8 +43,10 @@ const Login = () => {
 
         if (role === "admin") {
           navigate("/admin/dashboard");
-        } else {
+        } else if (role === "employee") {
           navigate("/user/dashboard");
+        } else {
+          navigate("/login");
         }
       }
     } catch (error) {

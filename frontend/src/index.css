@@ -84,3 +84,21 @@
   --sx-week-grid-hour-height: 46.5px !important;
   --sx-week-grid-height: 700px !important;
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+  }
+}

@@ -62,7 +62,7 @@ const ChangePassword = () => {
           </h3>
         </div>
         <p className="text-sx text-slate-700 mt-[5px] mb-6">
-          To change your password please enter your old and new password.
+          Please enter your old and new password.
         </p>
 
         <form onSubmit={handleSubmit}>

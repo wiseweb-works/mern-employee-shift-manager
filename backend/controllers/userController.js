@@ -1,3 +1,5 @@
+"use strict";
+
 const User = require("../models/User.Model");
 const bcrypt = require("bcryptjs");
 
@@ -74,11 +76,11 @@ const updateUserPassword = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     if (!password) {
-      return res.status(404).json({ message: "Password need to send" });
+      return res.status(404).json({ message: "Password cannot be empty" });
     }
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(401).json({ message: "You send wrong password" });
+      return res.status(401).json({ message: "Invalid password" });
     }
 
     const salt = await bcrypt.genSalt(10);

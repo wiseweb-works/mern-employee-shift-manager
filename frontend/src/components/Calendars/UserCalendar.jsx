@@ -1,11 +1,6 @@
 import { useCalendarApp, ScheduleXCalendar } from "@schedule-x/react";
 import "@schedule-x/theme-default/dist/index.css";
-import {
-  viewWeek,
-  viewDay,
-  viewMonthGrid,
-  viewMonthAgenda,
-} from "@schedule-x/calendar";
+import { viewWeek, viewDay, viewMonthGrid } from "@schedule-x/calendar";
 
 const UserCalendar = ({ events }) => {
   const calendar = useCalendarApp({

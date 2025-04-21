@@ -43,7 +43,7 @@ const CreateUsers = () => {
         team,
       });
 
-      const { token, role } = response.data;
+      const { token } = response.data;
 
       if (token) {
         navigate("/admin/users");
@@ -64,7 +64,7 @@ const CreateUsers = () => {
           Create a Team Members
         </h3>
         <p className="text-sx text-slate-700 mt-[5px] mb-6">
-          Please enter her/him details be
+          Please enter his/her details
         </p>
 
         <form onSubmit={handleSignUp}>

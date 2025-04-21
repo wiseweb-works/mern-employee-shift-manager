@@ -1,3 +1,5 @@
+"use strict";
+
 const Shift = require("../models/Shift.Model");
 const moment = require("moment-timezone");
 

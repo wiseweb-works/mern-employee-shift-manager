@@ -11,6 +11,7 @@ import UserDashboard from "../pages/User/UserDashboard";
 import ViewStatistics from "../pages/User/ViewStatistics";
 import ChangePassword from "../pages/User/ChangePassword";
 import AdminStatistics from "../pages/Admin/AdminStatistics";
+import PrivateRoute from "./PrivateRoute";
 
 const AppRouter = () => {
   return (
@@ -19,16 +20,23 @@ const AppRouter = () => {
         <Routes>
           <Route path="/" element={<Root />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/admin/dashboard" element={<Dashboard />} />
-          <Route path="/admin/create-shifts" element={<CreateShifts />} />
-          <Route path="/admin/create-user" element={<CreateUsers />} />
-          <Route path="/admin/users" element={<ManageUsers />} />
-          <Route path="/admin/users/:id" element={<EditUser />} />
-          <Route path="/admin/statistics" element={<AdminStatistics />} />
 
-          <Route path="/user/dashboard" element={<UserDashboard />} />
-          <Route path="/user/statistics" element={<ViewStatistics />} />
-          <Route path="/user/change-password" element={<ChangePassword />} />
+          {/* Admin Route */}
+          <Route element={<PrivateRoute allowedRoles={["admin"]} />}>
+            <Route path="/admin/dashboard" element={<Dashboard />} />
+            <Route path="/admin/create-shifts" element={<CreateShifts />} />
+            <Route path="/admin/create-user" element={<CreateUsers />} />
+            <Route path="/admin/users" element={<ManageUsers />} />
+            <Route path="/admin/users/:id" element={<EditUser />} />
+            <Route path="/admin/statistics" element={<AdminStatistics />} />
+          </Route>
+
+          {/* User Route */}
+          <Route element={<PrivateRoute allowedRoles={["employee"]} />}>
+            <Route path="/user/dashboard" element={<UserDashboard />} />
+            <Route path="/user/statistics" element={<ViewStatistics />} />
+            <Route path="/user/change-password" element={<ChangePassword />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </UserProvider>

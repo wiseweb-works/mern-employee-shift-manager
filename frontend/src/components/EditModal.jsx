@@ -3,19 +3,17 @@ import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
 
 const shiftTimes = {
-  sabah: { start: "08:00", end: "16:30" },
-  aksam: { start: "13:30", end: "22:00" },
+  morning: { start: "08:00", end: "16:30" },
+  night: { start: "13:30", end: "22:00" },
 };
 
 const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
   const [date, setDate] = useState("");
-  const [shift, setShift] = useState("sabah");
+  const [shift, setShift] = useState("morning");
   const [employee, setEmployee] = useState("");
   const [notes, setNotes] = useState("");
   const [allUsers, setAllUsers] = useState([]);
   const [error, setError] = useState("");
-
-  console.log(initialData);
 
   const getAllUsers = async () => {
     try {
@@ -37,8 +35,8 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
     if (initialData) {
       const dt = new Date(initialData.start);
       setDate(dt.toISOString().split("T")[0]);
-      const isSabah = initialData.start.includes("08:00");
-      setShift(isSabah ? "sabah" : "aksam");
+      const isMorning = initialData.start.includes("08:00");
+      setShift(isMorning ? "morning" : "night");
       setEmployee(initialData.employee._id);
       setNotes(initialData.notes || "");
     }
@@ -144,8 +142,8 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
               onChange={(e) => setShift(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             >
-              <option value="sabah">Morning (08:00 - 16:30)</option>
-              <option value="aksam">Night (13:30 - 22:00)</option>
+              <option value="morning">Morning (08:00 - 16:30)</option>
+              <option value="night">Night (13:30 - 22:00)</option>
             </select>
           </div>
 

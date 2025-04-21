@@ -1,25 +1,17 @@
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/UserContext";
 import DashboardLayout from "../../components/DashboardLayout";
-import { LuArrowRight } from "react-icons/lu";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import moment from "moment";
 import DashboardCalendar from "../../components/Calendars/DashboardCalendar";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import {
-  viewWeek,
-  viewDay,
-  viewMonthGrid,
-  viewMonthAgenda,
-} from "@schedule-x/calendar";
+import { viewDay, viewMonthGrid, viewMonthAgenda } from "@schedule-x/calendar";
 import ToggleSwitch from "../../components/ToogleSwitch";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import EditModal from "../../components/EditModal";
 
 const Dashboard = () => {
-  // useUserAuth();
-
   const [events, setEvents] = useState([]);
   const [isOpen, setIsOpen] = useState(true);
   const [editMode, setEditMode] = useState(false);

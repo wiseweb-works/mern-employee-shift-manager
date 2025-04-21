@@ -12,9 +12,15 @@ function createMockData(allUsers, selectedDay) {
   ).getDate();
 
   const SHIFTS = [
-    { name: "Sabah", startHour: 8, startMinute: 0, endHour: 16, endMinute: 30 },
     {
-      name: "Öğlen",
+      name: "Morning",
+      startHour: 8,
+      startMinute: 0,
+      endHour: 16,
+      endMinute: 30,
+    },
+    {
+      name: "Night",
       startHour: 13,
       startMinute: 30,
       endHour: 22,
@@ -63,7 +69,7 @@ function createMockData(allUsers, selectedDay) {
     const currentWeek = getWeekNumberInMonth(currentDate);
 
     const assignedToday = new Set();
-    const partTimeAssignedTodayRef = { value: false }; // 🔹 Günlük part-time kontrolü
+    const partTimeAssignedTodayRef = { value: false };
 
     for (const shift of SHIFTS) {
       const selectedBetreuer = selectPeople(
@@ -118,8 +124,6 @@ function createMockData(allUsers, selectedDay) {
   return allShifts;
 }
 
-// 🔧 Yardımcı Fonksiyonlar
-
 function shuffleArray(arr) {
   return arr.slice().sort(() => 0.5 - Math.random());
 }
@@ -151,7 +155,7 @@ function selectPeople(
     const maxWeekly = Math.ceil(maxAllowed / totalWeeks);
 
     if (person.isPartTime && partTimeAssignedTodayRef.value) {
-      continue; // ❌ Aynı gün ikinci part-time atanamaz
+      continue;
     }
 
     if (

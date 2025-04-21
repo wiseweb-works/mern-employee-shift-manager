@@ -1,3 +1,5 @@
+"use strict";
+
 const express = require("express");
 const { protect, adminOnly } = require("../middlewares/authMiddleware");
 const {
