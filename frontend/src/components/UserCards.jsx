@@ -3,6 +3,7 @@ import { MdEdit } from "react-icons/md";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
 import { useNavigate } from "react-router";
+import toast from "react-hot-toast";
 
 const UserCard = ({ userInfo }) => {
   const navigate = useNavigate();
@@ -18,7 +19,7 @@ const UserCard = ({ userInfo }) => {
           window.location.reload();
         }
       } catch (error) {
-        console.error("Error deleting users:", error);
+        toast.error("Error deleting users:", error);
       }
     }
   };

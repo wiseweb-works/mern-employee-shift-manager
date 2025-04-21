@@ -17,7 +17,6 @@ const EditUser = () => {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
 
   const getUserInfo = async () => {
     setLoading(true);
@@ -34,7 +33,7 @@ const EditUser = () => {
         setIsActive(user.isActive);
       }
     } catch (error) {
-      console.error("Error fetching user:", error);
+      toast.error("Error fetching user:", error);
     } finally {
       setLoading(false);
     }
@@ -45,25 +44,23 @@ const EditUser = () => {
     setLoading(true);
 
     if (!name) {
-      setError("Please enter full name");
+      toast.error("Please enter full name");
       return;
     }
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      toast.error("Please enter a valid email address");
       return;
     }
 
     if (!team) {
-      setError("Please select a valid Team");
+      toast.error("Please select a valid Team");
       return;
     }
     if (!workType) {
-      setError("Please select a valid Work Type");
+      toast.error("Please select a valid Work Type");
       return;
     }
-
-    setError("");
 
     try {
       const response = await axiosInstance.put(
@@ -82,9 +79,9 @@ const EditUser = () => {
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        setError("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     } finally {
       setLoading(false);

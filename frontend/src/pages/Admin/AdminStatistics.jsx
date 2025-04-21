@@ -8,6 +8,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import { FaPrint } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const AdminStatistics = () => {
   const [events, setEvents] = useState([]);
@@ -35,7 +36,7 @@ const AdminStatistics = () => {
         setEvents(formattedShiftDataArray);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -46,7 +47,7 @@ const AdminStatistics = () => {
         setUsers(result.data.users);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 

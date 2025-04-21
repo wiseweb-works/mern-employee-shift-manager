@@ -12,6 +12,7 @@ import ViewStatistics from "../pages/User/ViewStatistics";
 import ChangePassword from "../pages/User/ChangePassword";
 import AdminStatistics from "../pages/Admin/AdminStatistics";
 import PrivateRoute from "./PrivateRoute";
+import { Toaster } from "react-hot-toast";
 
 const AppRouter = () => {
   return (
@@ -39,6 +40,7 @@ const AppRouter = () => {
           </Route>
         </Routes>
       </BrowserRouter>
+      <Toaster />
     </UserProvider>
   );
 };

@@ -66,9 +66,6 @@ const ShiftCalendar = ({
       onEventUpdate(updatedEvent) {
         handleShiftUpdate(updatedEvent);
       },
-      onEventClick(calendarEvent) {
-        console.log("onEventClick", calendarEvent);
-      },
     },
     showWeekNumbers: true,
     plugins: [createEventModalPlugin(), createDragAndDropPlugin()],

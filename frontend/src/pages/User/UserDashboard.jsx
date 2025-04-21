@@ -7,6 +7,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import UserCalendar from "../../components/Calendars/UserCalendar";
+import toast from "react-hot-toast";
 
 const UserDashboard = () => {
   const { user } = useContext(UserContext);
@@ -33,7 +34,7 @@ const UserDashboard = () => {
         setEvents(formattedShiftDataArray);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -41,8 +42,6 @@ const UserDashboard = () => {
     getAllShifts();
     return () => {};
   }, []);
-
-  console.log(events);
 
   return (
     <DashboardLayout activeMenu="Dashboard">

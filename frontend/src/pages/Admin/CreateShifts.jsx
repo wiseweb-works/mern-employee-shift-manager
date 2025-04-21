@@ -9,6 +9,7 @@ import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 import { viewDay, viewMonthGrid } from "@schedule-x/calendar";
 import ShiftCalendar from "../../components/Calendars/ShiftCalendar";
 import moment from "moment";
+import toast from "react-hot-toast";
 
 const CreateShifts = () => {
   const [isOpen, setIsOpen] = useState(
@@ -49,7 +50,7 @@ const CreateShifts = () => {
           ]);
         }
       } catch (error) {
-        console.log(error);
+        toast.error(error);
       }
     }
   };
@@ -67,7 +68,7 @@ const CreateShifts = () => {
         setEvents(createMockData(result.data.users, selectedDay));
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 

@@ -24,6 +24,7 @@ import {
   getNextMonth,
   getPreviousMonth,
 } from "../../utils/helper";
+import toast from "react-hot-toast";
 
 const ViewStatistics = () => {
   const [events, setEvents] = useState([]);
@@ -53,7 +54,7 @@ const ViewStatistics = () => {
         setEvents(formattedShiftDataArray);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 

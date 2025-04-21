@@ -6,11 +6,11 @@ import { validateEmail } from "../utils/helper";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
 import { UserContext } from "../context/UserContext";
+import toast from "react-hot-toast";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const { updateUser } = useContext(UserContext);
@@ -18,16 +18,14 @@ const Login = () => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      toast.error("Please enter a valid email address");
       return;
     }
 
     if (!password) {
-      setError("Please enter the password");
+      toast.error("Please enter the password");
       return;
     }
-
-    setError("");
 
     try {
       const response = await axiosInstance.post(API_PATH.AUTH.LOGIN, {
@@ -38,6 +36,7 @@ const Login = () => {
       const { token, role } = response.data;
 
       if (token) {
+        toast.success("Login was successfully");
         localStorage.setItem("token", token);
         updateUser(response.data);
 
@@ -51,9 +50,9 @@ const Login = () => {
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        setError("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     }
   };
@@ -82,8 +81,6 @@ const Login = () => {
             placeholder="Min 8 Characters"
             type="password"
           />
-
-          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
           <button type="submit" className="btn-primary">
             LOGIN

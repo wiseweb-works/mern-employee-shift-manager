@@ -4,6 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { useEffect, useState } from "react";
 import UserCard from "../../components/UserCards";
 import { RiResetLeftFill } from "react-icons/ri";
+import toast from "react-hot-toast";
 
 const ManageUsers = () => {
   const [allUsers, setAllUsers] = useState([]);
@@ -18,7 +19,7 @@ const ManageUsers = () => {
         setAllUsers(response.data.users);
       }
     } catch (error) {
-      console.error("Error fetchin users:", error);
+      toast.error("Error fetchin users:", error);
     }
   };
 

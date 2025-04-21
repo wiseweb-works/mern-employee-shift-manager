@@ -10,7 +10,6 @@ const ChangePassword = () => {
   const { user, clearUser } = useContext(UserContext);
   const [password, setPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
@@ -20,12 +19,12 @@ const ChangePassword = () => {
     e.preventDefault();
 
     if (!password) {
-      setError("You need to enter your old password");
+      toast.error("You need to enter your old password");
       return;
     }
 
     if (!newPassword) {
-      setError("You need to enter your new password");
+      toast.error("You need to enter your new password");
       return;
     }
 
@@ -41,7 +40,7 @@ const ChangePassword = () => {
         handleLogout();
       }
     } catch (error) {
-      setError(error);
+      toast.error(error);
     } finally {
       setLoading(false);
     }
@@ -97,8 +96,6 @@ const ChangePassword = () => {
               placeholder="Please enter your new password"
             />
           </div>
-
-          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading}>
             UPDATE PASSWORD

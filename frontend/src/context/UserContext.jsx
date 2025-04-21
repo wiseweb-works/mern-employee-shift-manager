@@ -1,6 +1,7 @@
 import { useState, createContext, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
+import toast from "react-hot-toast";
 
 export const UserContext = createContext({
   user: null,
@@ -27,7 +28,7 @@ const UserProvider = ({ children }) => {
         const response = await axiosInstance.get(API_PATH.AUTH.GET_PROFILE);
         setUser(response.data);
       } catch {
-        console.error("User not authenticated");
+        toast.error("User not authenticated");
         clearUser();
       } finally {
         setLoading(false);

@@ -10,6 +10,7 @@ import { viewDay, viewMonthGrid, viewMonthAgenda } from "@schedule-x/calendar";
 import ToggleSwitch from "../../components/ToogleSwitch";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import EditModal from "../../components/EditModal";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   const [events, setEvents] = useState([]);
@@ -28,13 +29,11 @@ const Dashboard = () => {
           { start: updated.start, end: updated.end }
         );
         if (response?.status === 200) {
-          console.log("Shift Updated Succesfully");
+          toast.success("Shift Updated Succesfully");
           getAllShifts();
-        } else {
-          console.log(response);
         }
       } catch (error) {
-        console.error(error);
+        toast.error(error);
       }
     }
   };
@@ -64,7 +63,7 @@ const Dashboard = () => {
         setEvents(formattedShiftDataArray);
       }
     } catch (error) {
-      console.log(error);
+      toast.error(error);
     }
   };
 
@@ -92,7 +91,6 @@ const Dashboard = () => {
                 {moment().format("DD.MM.YYYY")}
               </p>
             </div>
-
             <button
               onClick={() => setIsOpen(!isOpen)}
               className="p-3 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-md hover:shadow-lg hover:brightness-105 transition-all duration-300 ease-out"

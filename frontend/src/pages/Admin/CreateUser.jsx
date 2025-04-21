@@ -13,27 +13,24 @@ const CreateUsers = () => {
   const [password, setPassword] = useState("");
 
   const navigate = useNavigate();
-  const [error, setError] = useState(null);
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
-      setError("Please enter a valid email address");
+      toast.error("Please enter a valid email address");
       return;
     }
 
     if (!name) {
-      setError("Please enter full name");
+      toast.error("Please enter full name");
       return;
     }
 
     if (!password) {
-      setError("Please enter the password");
+      toast.error("Please enter the password");
       return;
     }
-
-    setError("");
 
     try {
       const response = await axiosInstance.post(API_PATH.AUTH.REGISTER, {
@@ -50,9 +47,9 @@ const CreateUsers = () => {
       }
     } catch (error) {
       if (error.response && error.response.data.message) {
-        setError(error.response.data.message);
+        toast.error(error.response.data.message);
       } else {
-        setError("Something went wrong. Please try again.");
+        toast.error("Something went wrong. Please try again.");
       }
     }
   };
@@ -107,7 +104,6 @@ const CreateUsers = () => {
               </div>
             </div>
           </div>
-          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
           <button type="submit" className="btn-primary">
             SIGN UP

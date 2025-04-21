@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
+import toast from "react-hot-toast";
 
 const shiftTimes = {
   morning: { start: "08:00", end: "16:30" },
@@ -13,7 +14,6 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
   const [employee, setEmployee] = useState("");
   const [notes, setNotes] = useState("");
   const [allUsers, setAllUsers] = useState([]);
-  const [error, setError] = useState("");
 
   const getAllUsers = async () => {
     try {
@@ -22,7 +22,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
         setAllUsers(response.data.users);
       }
     } catch (error) {
-      setError("Error fetchin users:", error);
+      toast.error("Error fetchin users:", error);
     }
   };
 
@@ -62,12 +62,12 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
         }
       );
       if (response.status === 200) {
-        console.log("User Updated");
+        toast.success("User Updated");
         setModalOpen(false);
         window.location.reload();
       }
     } catch (error) {
-      setError(error);
+      toast.error(error);
     }
   };
 
@@ -200,15 +200,6 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
               Update Shift
             </button>
           </div>
-
-          {error && (
-            <div>
-              <label className="block text-sm font-medium text-gray-600">
-                Error
-              </label>
-              <p>{error}</p>
-            </div>
-          )}
         </form>
       </div>
     </div>
