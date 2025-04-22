@@ -20,8 +20,7 @@ const UserSchema = new mongoose.Schema(
     },
     team: {
       type: String,
-      enum: ["sozialarbeiter", "sozialbetreuer"],
-      default: "sozialbetreuer",
+      enum: ["sozialarbeiter", "sozialbetreuer", "sozialbetreuerhelfer"],
     },
     workType: {
       type: String,

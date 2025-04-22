@@ -6,6 +6,7 @@ const cors = require("cors");
 
 const errorHandler = require("./middlewares/errorHandler");
 const connectDB = require("./config/db");
+// const queryHandler = require("./middlewares/queryHandler");
 
 const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
@@ -23,6 +24,7 @@ app.use(
 
 connectDB();
 app.use(express.json());
+// app.use(queryHandler);
 
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);

@@ -1,11 +1,14 @@
-import moment from "moment";
 import { useEffect, useState } from "react";
 import { RiResetLeftFill } from "react-icons/ri";
+import VertikalTable from "./VertikalTable";
+import HorizontalTable from "./HorizontalTable";
+import { TbFileOrientation } from "react-icons/tb";
 
 const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
   const [teamFilter, setTeamFilter] = useState("all");
   const [workFilter, setWorkFilter] = useState("all");
   const [activeFilter, setActiveFilter] = useState("all");
+  const [orientation, setOrientation] = useState(true);
 
   const handleFilter = () => {
     let filtered = users;
@@ -42,6 +45,12 @@ const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
   return (
     <>
       <div className="flex flex-col sm:flex-row gap-2 mb-4">
+        <button
+          className="flex md:flex download-btn shadow-sm"
+          onClick={() => setOrientation(!orientation)}
+        >
+          <TbFileOrientation className="text-lg" />
+        </button>
         <span className="select-boxx">{`Count: ${
           handleFilter()?.length
         }`}</span>
@@ -82,85 +91,20 @@ const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
           </button>
         )}
       </div>
-      <table className="table-auto border-collapse w-full text-sm">
-        <thead>
-          <tr>
-            <th className="border px-2 py-1 bg-gray-100">#</th>
-            {[...Array(moment(selectedMonth).daysInMonth())].map((_, i) => (
-              <th key={i} className="border px-2 py-1 bg-gray-100 text-center">
-                {String(i + 1).padStart(2, "0")}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {handleFilter()?.map((user) => (
-            <tr key={user._id}>
-              <td className="border px-2 py-1 font-semibold bg-gray-50 text-center">
-                <span
-                  className={`${
-                    user?.team === "sozialarbeiter"
-                      ? "text-blue-500"
-                      : user?.workType === "part-time"
-                      ? "text-yellow-600"
-                      : "text-red-500"
-                  }`}
-                >
-                  {user?.name}
-                </span>
-              </td>
 
-              {Array.from(
-                { length: moment(selectedMonth).daysInMonth() },
-                (_, i) => i + 1
-              ).map((day, index) => (
-                <td
-                  key={index}
-                  className={`border px-2 py-1 font-semibold text-center ${(() => {
-                    const eventForDay = filteredEvents
-                      .filter((event) => event.employee._id === user._id)
-                      .find((event) => {
-                        const dd = moment(event.start).format("DD");
-                        const hour = moment(event.start).format("HH:mm");
-                        return (
-                          dd == day && (hour == "08:00" || hour == "13:30")
-                        );
-                      });
-
-                    if (eventForDay) {
-                      const hour = moment(eventForDay.start).format("HH:mm");
-                      if (hour === "08:00") return "bg-yellow-100";
-                      if (hour === "13:30") return "bg-purple-100";
-                    }
-                    return "bg-gray-50";
-                  })()}
-    `}
-                >
-                  {(() => {
-                    const eventForDay = filteredEvents
-                      .filter((event) => event.employee._id === user._id)
-                      .find((event) => {
-                        const dd = moment(event.start).format("DD");
-                        const hour = moment(event.start).format("HH:mm");
-                        return (
-                          dd == day && (hour == "08:00" || hour == "13:30")
-                        );
-                      });
-
-                    if (eventForDay) {
-                      const hour = moment(eventForDay.start).format("HH:mm");
-                      if (hour === "08:00") return "F";
-                      if (hour === "13:30") return "S";
-                    }
-
-                    return "";
-                  })()}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      {orientation ? (
+        <VertikalTable
+          selectedMonth={selectedMonth}
+          handleFilter={handleFilter}
+          filteredEvents={filteredEvents}
+        />
+      ) : (
+        <HorizontalTable
+          selectedMonth={selectedMonth}
+          handleFilter={handleFilter}
+          filteredEvents={filteredEvents}
+        />
+      )}
     </>
   );
 };
