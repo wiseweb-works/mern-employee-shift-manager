@@ -5,14 +5,19 @@ const bcrypt = require("bcryptjs");
 
 const getUsers = async (req, res) => {
   try {
-    const [users, total, sozialarbeiter, sozialbetreuer] = await Promise.all([
-      User.find({ role: "employee" }).select("-password").lean(),
-      User.countDocuments({ role: "employee" }),
-      User.countDocuments({ role: "employee", team: "sozialarbeiter" }),
-      User.countDocuments({ role: "employee", team: "sozialbetreuer" }),
-    ]);
+    const [users, total, sozialarbeiter, sozialbetreuer, sozialbetreuerhelfer] =
+      await Promise.all([
+        User.find({ role: "employee" }).select("-password").lean(),
+        User.countDocuments({ role: "employee" }),
+        User.countDocuments({ role: "employee", team: "sozialarbeiter" }),
+        User.countDocuments({ role: "employee", team: "sozialbetreuer" }),
+        User.countDocuments({ role: "employee", team: "sozialbetreuerhelfer" }),
+      ]);
 
-    res.json({ count: { total, sozialarbeiter, sozialbetreuer }, users });
+    res.json({
+      count: { total, sozialarbeiter, sozialbetreuer, sozialbetreuerhelfer },
+      users,
+    });
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }

@@ -28,165 +28,84 @@ function createMockData(allUsers, selectedDay) {
     },
   ];
 
-  const MAX_SHIFTS_PER_PERSON = 21;
-  const MAX_SHIFTS_PARTTIME = 12;
-
-  const people = allUsers
-    .filter((user) => user.isActive)
-    .map((user) => ({
-      id: user._id,
-      name: user.name,
-      calendarId: user.workType === "part-time" ? "partTime" : user.team,
-      isPartTime: user.workType === "part-time",
-    }));
-
-  const betreuer = shuffleArray(
-    people.filter(
-      (p) => p.calendarId === "sozialbetreuer" || p.calendarId === "partTime"
-    )
-  );
-  const arbeiter = shuffleArray(
-    people.filter((p) => p.calendarId === "sozialarbeiter")
-  );
-
-  const shiftCount = {};
-  const weeklyShiftCount = {};
-  people.forEach((p) => {
-    shiftCount[p.name] = 0;
-    weeklyShiftCount[p.name] = {};
-  });
-
-  const betreuerIndex = { value: 0 };
-  const arbeiterIndex = { value: 0 };
-
   const allShifts = [];
   let idCounter = 1;
-  const totalWeeks = Math.ceil(DAYS / 7);
 
-  for (let day = 0; day < DAYS; day++) {
-    const currentDate = new Date(startDay);
-    currentDate.setDate(startDay.getDate() + day);
-    const currentWeek = getWeekNumberInMonth(currentDate);
+  // Kullanıcıları filtrele
+  const arbeiter = allUsers
+    .filter((u) => u.isActive && u.team === "sozialarbeiter")
+    .sort((a, b) => a.name.localeCompare(b.name));
 
-    const assignedToday = new Set();
-    const partTimeAssignedTodayRef = { value: false };
+  const betreuer = allUsers
+    .filter(
+      (u) =>
+        u.isActive &&
+        (u.team === "sozialbetreuer" || u.workType === "part-time")
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
 
-    for (const shift of SHIFTS) {
-      const selectedBetreuer = selectPeople(
-        betreuer,
-        betreuerIndex,
-        4,
-        assignedToday,
-        shiftCount,
-        weeklyShiftCount,
-        currentWeek,
-        totalWeeks,
-        MAX_SHIFTS_PER_PERSON,
-        MAX_SHIFTS_PARTTIME,
-        partTimeAssignedTodayRef
-      );
+  // Sabah/akşam ayrımı
+  const arbeiterMorning = arbeiter.slice(0, Math.ceil(arbeiter.length / 2));
+  const arbeiterNight = arbeiter.slice(Math.ceil(arbeiter.length / 2));
+  const betreuerMorning = betreuer.slice(0, Math.ceil(betreuer.length / 2));
+  const betreuerNight = betreuer.slice(Math.ceil(betreuer.length / 2));
 
-      const selectedArbeiter = selectPeople(
-        arbeiter,
-        arbeiterIndex,
-        2,
-        assignedToday,
-        shiftCount,
-        weeklyShiftCount,
-        currentWeek,
-        totalWeeks,
-        MAX_SHIFTS_PER_PERSON,
-        MAX_SHIFTS_PARTTIME,
-        partTimeAssignedTodayRef
-      );
+  // Vardiya atama fonksiyonu
+  const assignShifts = (users, shiftInfo, startOffset, patternType) => {
+    users.forEach((user, userIndex) => {
+      const cycleLength = patternType === "betreuer" ? 6 : 4;
+      const offset = (userIndex + startOffset) % cycleLength;
 
-      const selected = [...selectedBetreuer, ...selectedArbeiter];
+      for (let day = 1; day <= DAYS; day++) {
+        const currentDate = new Date(startDay);
+        currentDate.setDate(day);
 
-      for (const person of selected) {
+        let isWorkingDay = true;
+
+        if (patternType === "arbeiter") {
+          // 4 günde 1 izin
+          const cycleDay = (day - 1 + offset) % 4;
+          if (cycleDay === 0) isWorkingDay = false;
+        }
+
+        if (patternType === "betreuer") {
+          // 6 günde 4 çalış, 2 izin (izin günleri cycleDay 4 ve 5)
+          const cycleDay = (day - 1 + offset) % 6;
+          if (cycleDay === 4 || cycleDay === 5) isWorkingDay = false;
+        }
+
+        if (!isWorkingDay) continue;
+
         const shiftStart = new Date(currentDate);
-        shiftStart.setHours(shift.startHour, shift.startMinute, 0, 0);
+        shiftStart.setHours(shiftInfo.startHour, shiftInfo.startMinute, 0, 0);
 
         const shiftEnd = new Date(currentDate);
-        shiftEnd.setHours(shift.endHour, shift.endMinute, 0, 0);
+        shiftEnd.setHours(shiftInfo.endHour, shiftInfo.endMinute, 0, 0);
 
         allShifts.push({
           id: idCounter++,
-          title: person.name,
-          uid: person.id,
+          title: user.name,
+          uid: user._id,
           start: formatDate(shiftStart),
           end: formatDate(shiftEnd),
-          calendarId: person.calendarId,
+          calendarId: user.workType === "part-time" ? "partTime" : user.team,
         });
       }
-    }
-  }
+    });
+  };
+
+  // Vardiyaları ata
+  assignShifts(arbeiterMorning, SHIFTS[0], 0, "arbeiter");
+  assignShifts(arbeiterNight, SHIFTS[1], 0, "arbeiter");
+  assignShifts(betreuerMorning, SHIFTS[0], arbeiter.length, "betreuer");
+  assignShifts(betreuerNight, SHIFTS[1], arbeiter.length, "betreuer");
 
   return allShifts;
 }
 
-function shuffleArray(arr) {
-  return arr.slice().sort(() => 0.5 - Math.random());
-}
-
-function selectPeople(
-  arr,
-  indexObj,
-  count,
-  assignedToday,
-  shiftCount,
-  weeklyShiftCount,
-  currentWeek,
-  totalWeeks,
-  maxShifts,
-  maxShiftsPartTime,
-  partTimeAssignedTodayRef
-) {
-  const selected = [];
-  let tries = 0;
-
-  while (selected.length < count && tries < arr.length * 2) {
-    const person = arr[indexObj.value];
-    indexObj.value = (indexObj.value + 1) % arr.length;
-    tries++;
-
-    const maxAllowed = person.isPartTime ? maxShiftsPartTime : maxShifts;
-    const personTotal = shiftCount[person.name];
-    const personWeekly = weeklyShiftCount[person.name][currentWeek] || 0;
-    const maxWeekly = Math.ceil(maxAllowed / totalWeeks);
-
-    if (person.isPartTime && partTimeAssignedTodayRef.value) {
-      continue;
-    }
-
-    if (
-      personTotal < maxAllowed &&
-      personWeekly < maxWeekly &&
-      !assignedToday.has(person.name)
-    ) {
-      selected.push(person);
-      assignedToday.add(person.name);
-
-      if (person.isPartTime) {
-        partTimeAssignedTodayRef.value = true;
-      }
-
-      shiftCount[person.name]++;
-      weeklyShiftCount[person.name][currentWeek] = personWeekly + 1;
-    }
-  }
-
-  return selected;
-}
-
+// Yardımcı tarih formatlayıcı
 function formatDate(date) {
   return date.toISOString().replace("T", " ").substring(0, 16);
-}
-
-function getWeekNumberInMonth(date) {
-  const start = new Date(date.getFullYear(), date.getMonth(), 1);
-  const dayOfMonth = date.getDate();
-  const offset = start.getDay();
-  return Math.floor((dayOfMonth + offset - 1) / 7);
 }
 
 export default createMockData;
