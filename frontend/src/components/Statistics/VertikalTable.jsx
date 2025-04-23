@@ -1,14 +1,50 @@
 import moment from "moment";
 
+const DAYS = ["", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+
 const VertikalTable = ({ selectedMonth, handleFilter, filteredEvents }) => {
   return (
     <table className="table-auto border-collapse w-full text-sm">
       <thead>
         <tr>
-          <th className="border px-2 py-1 bg-gray-100">#</th>
+          <th className="border px-2 py-1 bg-gray-100">Datum</th>
           {[...Array(moment(selectedMonth).daysInMonth())].map((_, i) => (
             <th key={i} className="border px-2 py-1 bg-gray-100 text-center">
               {String(i + 1).padStart(2, "0")}
+            </th>
+          ))}
+          <th className="border px-2 py-1 bg-gray-100 text-center">#</th>
+        </tr>
+        <tr>
+          <th className="border px-2 py-1 bg-gray-100">Tag</th>
+          {[...Array(moment(selectedMonth).daysInMonth())].map((_, i) => (
+            <th
+              key={i}
+              className={`border px-2 py-1 ${
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(i, "day")
+                    .isoWeekday()
+                ] === "Sa" ||
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(i, "day")
+                    .isoWeekday()
+                ] === "So"
+                  ? "bg-gray-400"
+                  : "bg-gray-100"
+              }  text-center`}
+            >
+              {
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(i, "day")
+                    .isoWeekday()
+                ]
+              }
             </th>
           ))}
           <th className="border px-2 py-1 bg-gray-100 text-center">Count</th>

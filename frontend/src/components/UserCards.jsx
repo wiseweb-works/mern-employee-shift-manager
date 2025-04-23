@@ -64,7 +64,9 @@ const UserCard = ({ userInfo }) => {
           className={`flex-1 text-[10px] text-center font-medium ${
             userInfo?.team == "sozialarbeiter"
               ? "text-cyan-500"
-              : "text-red-500"
+              : userInfo?.team == "sozialbetreuer"
+              ? "text-red-500"
+              : "text-yellow-600"
           }  bg-gray-50 px-4 py-0.5 rounded`}
         >
           <span className="text-[12px] font-semibold capitalize">

@@ -31,30 +31,45 @@ function createMockData(allUsers, selectedDay) {
   const allShifts = [];
   let idCounter = 1;
 
-  // Kullanıcıları filtrele
-  const arbeiter = allUsers
-    .filter((u) => u.isActive && u.team === "sozialarbeiter")
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const groupByTeam = (teamName) =>
+    allUsers
+      .filter((u) => u.isActive && u.team === teamName)
+      .sort((a, b) => a.name.localeCompare(b.name));
 
-  const betreuer = allUsers
-    .filter(
-      (u) =>
-        u.isActive &&
-        (u.team === "sozialbetreuer" || u.workType === "part-time")
-    )
-    .sort((a, b) => a.name.localeCompare(b.name));
+  const splitShiftBalanced = (group) => {
+    const withChoiceMorning = group.filter((u) => u.shiftChoice === "morning");
+    const withChoiceNight = group.filter((u) => u.shiftChoice === "night");
+    const noChoice = group.filter((u) => !u.shiftChoice);
 
-  // Sabah/akşam ayrımı
-  const arbeiterMorning = arbeiter.slice(0, Math.ceil(arbeiter.length / 2));
-  const arbeiterNight = arbeiter.slice(Math.ceil(arbeiter.length / 2));
-  const betreuerMorning = betreuer.slice(0, Math.ceil(betreuer.length / 2));
-  const betreuerNight = betreuer.slice(Math.ceil(betreuer.length / 2));
+    const targetMorningCount = Math.ceil(group.length / 2);
+    const remainingMorningCount = targetMorningCount - withChoiceMorning.length;
 
-  // Vardiya atama fonksiyonu
-  const assignShifts = (users, shiftInfo, startOffset, patternType) => {
+    const shuffledNoChoice = shuffleArray(noChoice);
+    const assignedMorning = [
+      ...withChoiceMorning,
+      ...shuffledNoChoice.slice(0, remainingMorningCount),
+    ];
+    const assignedNight = [
+      ...withChoiceNight,
+      ...shuffledNoChoice.slice(remainingMorningCount),
+    ];
+
+    return { morning: assignedMorning, night: assignedNight };
+  };
+
+  const arbeiterSplit = splitShiftBalanced(groupByTeam("sozialarbeiter"));
+  const betreuerSplit = splitShiftBalanced(groupByTeam("sozialbetreuer"));
+  const betreuerhelferSplit = splitShiftBalanced(
+    groupByTeam("sozialbetreuerhelfer")
+  );
+
+  const assignShifts = (users, shiftInfo, offsets, patternType) => {
     users.forEach((user, userIndex) => {
       const cycleLength = patternType === "betreuer" ? 6 : 4;
-      const offset = (userIndex + startOffset) % cycleLength;
+      const offset =
+        Array.isArray(offsets) && offsets[userIndex] != null
+          ? offsets[userIndex]
+          : (userIndex + offsets) % cycleLength;
 
       for (let day = 1; day <= DAYS; day++) {
         const currentDate = new Date(startDay);
@@ -63,13 +78,11 @@ function createMockData(allUsers, selectedDay) {
         let isWorkingDay = true;
 
         if (patternType === "arbeiter") {
-          // 4 günde 1 izin
           const cycleDay = (day - 1 + offset) % 4;
           if (cycleDay === 0) isWorkingDay = false;
         }
 
         if (patternType === "betreuer") {
-          // 6 günde 4 çalış, 2 izin (izin günleri cycleDay 4 ve 5)
           const cycleDay = (day - 1 + offset) % 6;
           if (cycleDay === 4 || cycleDay === 5) isWorkingDay = false;
         }
@@ -94,18 +107,51 @@ function createMockData(allUsers, selectedDay) {
     });
   };
 
-  // Vardiyaları ata
-  assignShifts(arbeiterMorning, SHIFTS[0], 0, "arbeiter");
-  assignShifts(arbeiterNight, SHIFTS[1], 0, "arbeiter");
-  assignShifts(betreuerMorning, SHIFTS[0], arbeiter.length, "betreuer");
-  assignShifts(betreuerNight, SHIFTS[1], arbeiter.length, "betreuer");
+  assignShifts(arbeiterSplit.morning, SHIFTS[0], 0, "arbeiter");
+  assignShifts(arbeiterSplit.night, SHIFTS[1], 0, "arbeiter");
+  assignShifts(
+    betreuerSplit.morning,
+    SHIFTS[0],
+    arbeiterSplit.morning.length + arbeiterSplit.night.length,
+    "betreuer"
+  );
+  assignShifts(
+    betreuerSplit.night,
+    SHIFTS[1],
+    arbeiterSplit.morning.length + arbeiterSplit.night.length,
+    "betreuer"
+  );
+
+  const customOffsetsMorning = [0, 2, 4];
+  const customOffsetsNight = [0, 2, 4];
+
+  assignShifts(
+    betreuerhelferSplit.morning,
+    SHIFTS[0],
+    customOffsetsMorning,
+    "betreuer"
+  );
+  assignShifts(
+    betreuerhelferSplit.night,
+    SHIFTS[1],
+    customOffsetsNight,
+    "betreuer"
+  );
 
   return allShifts;
 }
 
-// Yardımcı tarih formatlayıcı
 function formatDate(date) {
   return date.toISOString().replace("T", " ").substring(0, 16);
+}
+
+function shuffleArray(array) {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 export default createMockData;

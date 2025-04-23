@@ -1,19 +1,33 @@
 import moment from "moment";
 
+const DAYS = ["", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
+
 const HorizontalTable = ({ selectedMonth, handleFilter, filteredEvents }) => {
   return (
     <table className="table-auto border-collapse w-full text-sm">
       <thead>
         <tr>
-          <th className="border px-2 py-1 bg-gray-100">#</th>
+          <th className="border px-2 py-1 bg-gray-100">Datum</th>
+          <th className="border px-2 py-1 bg-gray-100">Tag</th>
           {handleFilter()?.map((user) => (
             <th
               key={user._id}
               className="border px-2 py-1 bg-gray-100 text-center"
             >
-              {user?.name}
+              <span
+                className={`${
+                  user?.team === "sozialarbeiter"
+                    ? "text-blue-500"
+                    : user?.team === "sozialbetreuer"
+                    ? "text-red-500"
+                    : "text-yellow-600"
+                }`}
+              >
+                {user?.name}
+              </span>
             </th>
           ))}
+          <th className="border px-2 py-1 bg-gray-100">Datum</th>
         </tr>
       </thead>
       <tbody>
@@ -23,7 +37,37 @@ const HorizontalTable = ({ selectedMonth, handleFilter, filteredEvents }) => {
         ).map((day, index) => (
           <tr key={index}>
             <td className="border px-2 py-1 font-semibold bg-gray-50 text-center">
-              {String(day).padStart(2, "0")}
+              {moment(selectedMonth)
+                .startOf("month")
+                .add(index, "day")
+                .format("DD.MM.yyyy")}
+            </td>
+            <td
+              className={`border px-2 py-1 font-semibold ${
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(index, "day")
+                    .isoWeekday()
+                ] === "Sa" ||
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(index, "day")
+                    .isoWeekday()
+                ] === "So"
+                  ? "bg-gray-400"
+                  : "bg-gray-50"
+              }  text-center`}
+            >
+              {
+                DAYS[
+                  moment(selectedMonth)
+                    .startOf("month")
+                    .add(index, "day")
+                    .isoWeekday()
+                ]
+              }
             </td>
             {handleFilter()?.map((user) => (
               <td
@@ -63,11 +107,20 @@ const HorizontalTable = ({ selectedMonth, handleFilter, filteredEvents }) => {
                 })()}
               </td>
             ))}
+            <td className="border px-2 py-1 font-semibold bg-gray-50 text-center">
+              {moment(selectedMonth)
+                .startOf("month")
+                .add(index, "day")
+                .format("DD.MM.yyyy")}
+            </td>
           </tr>
         ))}
         <tr>
           <td className="border px-2 py-1 font-semibold text-center bg-gray-100">
             Count
+          </td>
+          <td className="border px-2 py-1 font-semibold text-center bg-gray-100">
+            #
           </td>
           {handleFilter()?.map((user) => (
             <td
@@ -81,6 +134,9 @@ const HorizontalTable = ({ selectedMonth, handleFilter, filteredEvents }) => {
               }
             </td>
           ))}
+          <td className="border px-2 py-1 font-semibold text-center bg-gray-100">
+            #
+          </td>
         </tr>
       </tbody>
     </table>
