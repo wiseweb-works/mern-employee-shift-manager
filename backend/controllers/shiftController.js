@@ -4,23 +4,41 @@ const Shift = require("../models/Shift.Model");
 const moment = require("moment-timezone");
 
 const getShifts = async (req, res) => {
+  const { start } = req?.query || {};
+
   try {
     let shifts;
     let count;
 
+    const startOfMonth = moment(start).startOf("month").toDate();
+    const endOfMonth = moment(start).endOf("month").toDate();
+
     if (req.user.role === "admin") {
-      shifts = await Shift.find().populate(
-        "employee",
-        "name email team workType"
-      );
-      count = await Shift.countDocuments();
+      shifts = await Shift.find({
+        start: { $gte: startOfMonth, $lte: endOfMonth },
+      })
+        .populate({
+          path: "employee",
+          select: "name email team workType",
+          options: { lean: true },
+        })
+        .lean();
+      count = await Shift.countDocuments({
+        start: { $gte: startOfMonth, $lte: endOfMonth },
+      }).lean();
     } else {
       shifts = await Shift.find({
         employee: req.user._id,
-      }).populate("employee", "name email");
+      })
+        .populate({
+          path: "employee",
+          select: "name email",
+          options: { lean: true },
+        })
+        .lean();
       count = await Shift.countDocuments({
         employee: req.user._id,
-      });
+      }).lean();
     }
 
     res.json({

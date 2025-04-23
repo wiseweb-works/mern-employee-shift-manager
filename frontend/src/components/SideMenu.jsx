@@ -38,8 +38,11 @@ const SideMenu = ({ activeMenu }) => {
         <div className="relative">
           <img
             className="w-20 h-20 bg-slate-400 rounded-full object-cover"
-            src="/avatars/avatar_12.png"
-            alt="Profile Image"
+            src={`/avatars/avatar_12.png`}
+            onError={(e) => {
+              e.currentTarget.src = "https://avatar.iran.liara.run/public/12";
+            }}
+            alt="avatar"
           />
         </div>
 

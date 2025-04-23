@@ -28,9 +28,14 @@ const UserCard = ({ userInfo }) => {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           <img
-            src={`/avatars/avatar_${Math.floor(Math.random() * 100) + 1}.png`}
-            alt={`Avatar`}
             className="w-12 h-12 rounded-full border-2 border-white object-cover"
+            src={`/avatars/avatar_${Math.floor(Math.random() * 100) + 1}.png`}
+            onError={(e) => {
+              e.currentTarget.src = `https://avatar.iran.liara.run/public/${
+                Math.floor(Math.random() * 100) + 1
+              }`;
+            }}
+            alt="avatar"
           />
           <div>
             <p className="text-sm font-medium">{userInfo?.name}</p>

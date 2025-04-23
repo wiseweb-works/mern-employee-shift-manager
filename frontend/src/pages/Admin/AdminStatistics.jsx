@@ -13,12 +13,13 @@ import toast from "react-hot-toast";
 const AdminStatistics = () => {
   const [events, setEvents] = useState([]);
   const [users, setUsers] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date());
 
   const getAllShifts = async () => {
     try {
-      const result = await axiosInstance.get(API_PATH.SHIFTS.GET_SHIFTS);
+      const result = await axiosInstance.get(API_PATH.SHIFTS.GET_SHIFTS, {
+        params: { start: moment(selectedMonth).format("yyyy-MM-DD") },
+      });
       if (result?.data?.shifts?.length > 0) {
         const formattedShiftDataArray = result.data.shifts.map((shift) => ({
           ...shift,
@@ -34,6 +35,8 @@ const AdminStatistics = () => {
           description: shift.notes,
         }));
         setEvents(formattedShiftDataArray);
+      } else {
+        setEvents([]);
       }
     } catch (error) {
       toast.error(error);
@@ -59,30 +62,15 @@ const AdminStatistics = () => {
     setSelectedMonth(getNextMonth(selectedMonth));
   };
 
-  const handleFilter = () => {
-    const filtered = events.filter(
-      (event) =>
-        moment(event.start).isSameOrAfter(
-          moment(selectedMonth).startOf("month")
-        ) &&
-        moment(event.start).isBefore(
-          moment(selectedMonth).add(1, "month").startOf("month")
-        )
-    );
-    return filtered;
-  };
-
   useEffect(() => {
-    getAllShifts();
     getAllUser();
     return () => {};
   }, []);
 
   useEffect(() => {
-    const filtered = handleFilter();
-    setFilteredEvents(filtered);
+    getAllShifts();
     return () => {};
-  }, [events, selectedMonth]);
+  }, [selectedMonth]);
 
   return (
     <DashboardLayout activeMenu="View Statistics">
@@ -108,7 +96,7 @@ const AdminStatistics = () => {
               <p className="text-lg font-medium">Morning Shifts</p>
               <p className="text-3xl font-bold text-yellow-600">
                 {
-                  filteredEvents.filter((event) =>
+                  events.filter((event) =>
                     String(event.start).endsWith("08:00")
                   ).length
                 }
@@ -117,14 +105,14 @@ const AdminStatistics = () => {
             <div className="bg-blue-100 rounded-2xl p-4 shadow-md flex-3 ">
               <p className="text-lg font-medium">Total Shift</p>
               <p className="text-3xl font-bold text-blue-600">
-                {filteredEvents.length}
+                {events.length}
               </p>
             </div>
             <div className="bg-purple-100 rounded-2xl p-4 shadow-md flex-3">
               <p className="text-lg font-medium">Night Shifts</p>
               <p className="text-3xl font-bold text-purple-600">
                 {
-                  filteredEvents.filter((event) =>
+                  events.filter((event) =>
                     String(event.start).endsWith("13:30")
                   ).length
                 }
@@ -159,7 +147,7 @@ const AdminStatistics = () => {
           <AdminShiftTable
             users={users}
             selectedMonth={selectedMonth}
-            filteredEvents={filteredEvents}
+            filteredEvents={events}
           />
         </div>
       </div>
