@@ -11,6 +11,7 @@ import ToggleSwitch from "../../components/ToogleSwitch";
 import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import EditModal from "../../components/EditModal";
 import toast from "react-hot-toast";
+import CalendarSelector from "../../components/Calendars/CalendarSelector";
 
 const Dashboard = () => {
   const [events, setEvents] = useState([]);
@@ -18,6 +19,7 @@ const Dashboard = () => {
   const [editMode, setEditMode] = useState(false);
   const [initialData, setInitialData] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
+  const [teamFilter, setTeamFilter] = useState("all");
 
   const { user } = useContext(UserContext);
 
@@ -106,28 +108,31 @@ const Dashboard = () => {
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="text-lg">Recent Shifts</h5>
+              <div>
+                <select
+                  className="select-boxx"
+                  onChange={(e) => setTeamFilter(e.target.value)}
+                  value={teamFilter}
+                >
+                  <option value="all">Team</option>
+                  <option value="sozialarbeiter">Sozialarbeiter</option>
+                  <option value="sozialbetreuer">Sozialbetreuer</option>
+                  <option value="sozialbetreuerhelfer">
+                    Sozialbetreuerhelfer
+                  </option>
+                </select>
+              </div>
               <ToggleSwitch editMode={editMode} setEditMode={setEditMode} />
             </div>
             <div className="mt-4">
-              {events?.length > 0 && !editMode && (
-                <DashboardCalendar
-                  events={events}
-                  setEvents={setEvents}
-                  views={[viewMonthAgenda]}
-                  editMode={editMode}
-                />
-              )}
-
-              {events?.length > 0 && editMode && (
-                <DashboardCalendar
-                  events={events}
-                  setEvents={setEvents}
-                  views={[viewMonthGrid, viewDay]}
-                  handleShiftUpdate={handleShiftUpdate}
-                  handleClick={handleClick}
-                  editMode={editMode}
-                />
-              )}
+              <CalendarSelector
+                events={events}
+                setEvents={setEvents}
+                handleShiftUpdate={handleShiftUpdate}
+                handleClick={handleClick}
+                editMode={editMode}
+                teamFilter={teamFilter}
+              />
             </div>
           </div>
         </div>

@@ -100,6 +100,9 @@ const CreateUsers = () => {
                   <option value="">Please Select</option>
                   <option value="sozialbetreuer">Sozialbetreuer</option>
                   <option value="sozialarbeiter">Sozialarbeiter</option>
+                  <option value="sozialbetreuerhelfer">
+                    Sozialbetreuerhelfer
+                  </option>
                 </select>
               </div>
             </div>

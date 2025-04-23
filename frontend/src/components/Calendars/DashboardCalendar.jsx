@@ -39,10 +39,10 @@ const DashboardCalendar = ({
           container: "#a24258",
         },
       },
-      partTime: {
+      sozialbetreuerhelfer: {
         colorName: "personal",
         lightColors: {
-          main: "#f9d71c",
+          main: "#efb100",
           container: "#fff5aa",
           onContainer: "#594800",
         },

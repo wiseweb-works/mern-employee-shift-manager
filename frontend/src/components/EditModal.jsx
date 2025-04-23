@@ -71,6 +71,24 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
     }
   };
 
+  const handleDelete = async (shiftId) => {
+    const isConfirmed = window.confirm("Are you sure to delete this Shift?");
+
+    if (isConfirmed) {
+      try {
+        const response = await axiosInstance.delete(
+          API_PATH.SHIFTS.GET_SHIFTS_BY_ID(shiftId)
+        );
+        if (response.status === 200) {
+          setModalOpen(false);
+          window.location.reload();
+        }
+      } catch (error) {
+        toast.error("Error deleting shifts:", error);
+      }
+    }
+  };
+
   if (!modalOpen) return null;
 
   return (
@@ -91,13 +109,23 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
             <label className="block text-sm font-medium text-gray-600">
               ID
             </label>
-            <input
-              type="text"
-              name="id"
-              readOnly
-              value={initialData._id}
-              className="mt-1 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-gray-600"
-            />
+            <div className="flex flex-row justify-between">
+              <input
+                type="text"
+                name="id"
+                readOnly
+                disabled
+                value={initialData._id}
+                className="mt-1 w-full rounded-md border border-gray-200 bg-gray-100 px-3 py-2 text-gray-600"
+              />
+              <button
+                type="button"
+                onClick={() => handleDelete(initialData._id)}
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+              >
+                Delete
+              </button>
+            </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600">

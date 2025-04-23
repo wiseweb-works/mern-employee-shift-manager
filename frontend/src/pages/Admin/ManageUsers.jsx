@@ -78,6 +78,7 @@ const ManageUsers = () => {
               <option value="all">Team</option>
               <option value="sozialarbeiter">Sozialarbeiter</option>
               <option value="sozialbetreuer">Sozialbetreuer</option>
+              <option value="sozialbetreuerhelfer">Sozialbetreuerhelfer</option>
             </select>
             <select
               className="select-boxx"

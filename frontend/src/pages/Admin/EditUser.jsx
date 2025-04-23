@@ -137,6 +137,9 @@ const EditUser = () => {
                   <option value="">Please Select</option>
                   <option value="sozialbetreuer">Sozialbetreuer</option>
                   <option value="sozialarbeiter">Sozialarbeiter</option>
+                  <option value="sozialbetreuerhelfer">
+                    Sozialbetreuerhelfer
+                  </option>
                 </select>
               </div>
             </div>
@@ -171,7 +174,6 @@ const EditUser = () => {
               </select>
             </div>
           </div>
-          {error && <p className="text-red-500 text-xs pb-2.5">{error}</p>}
 
           <button type="submit" className="btn-primary" disabled={loading}>
             UPDATE USER

@@ -4,7 +4,6 @@ import StatisticBar from "../../components/StatisticBar";
 import createMockData from "../../helpers/createMockData";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import { LuArrowDown, LuArrowUp } from "react-icons/lu";
 
 import { viewDay, viewMonthGrid } from "@schedule-x/calendar";
 import ShiftCalendar from "../../components/Calendars/ShiftCalendar";
@@ -12,14 +11,12 @@ import moment from "moment";
 import toast from "react-hot-toast";
 
 const CreateShifts = () => {
-  const [isOpen, setIsOpen] = useState(
-    localStorage.getItem("toogleStats") === "true" ? true : false
-  );
   const [allUsers, setAllUsers] = useState([]);
   const [events, setEvents] = useState([]);
+  const [show, setShow] = useState(false);
 
   const selectedDay = moment()
-    .add(2, "months")
+    .add(1, "months")
     .startOf("month")
     .format("YYYY-MM-DD");
 
@@ -55,11 +52,6 @@ const CreateShifts = () => {
     }
   };
 
-  const handleToogle = () => {
-    setIsOpen(!isOpen);
-    localStorage.setItem("toogleStats", JSON.stringify(!isOpen));
-  };
-
   const getAllUsers = async () => {
     try {
       const result = await axiosInstance.get(API_PATH.USERS.GET_ALL_USERS);
@@ -77,6 +69,23 @@ const CreateShifts = () => {
     return () => {};
   }, []);
 
+  const handleDisable = (input, shift) => {
+    const team = allUsers.filter((user) => user.team === input.team);
+    const morningTeam = team.filter(
+      (user) => user.shiftChoice === "morning"
+    ).length;
+    const nightTeam = team.filter(
+      (user) => user.shiftChoice === "night"
+    ).length;
+    if (shift === "morning") return morningTeam === Math.ceil(team.length / 2);
+    if (shift === "night") return nightTeam === Math.ceil(team.length / 2);
+  };
+
+  useEffect(() => {
+    setEvents(createMockData(allUsers, selectedDay));
+    return () => {};
+  }, [allUsers]);
+
   return (
     <DashboardLayout activeMenu="Create Shifts">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
@@ -84,51 +93,97 @@ const CreateShifts = () => {
           <div className="card">
             <div className="flex items-center justify-between">
               <h5 className="text-lg">Create Shifts</h5>
-              <button
-                className="card-btn"
-                onClick={() => window.location.reload()}
-              >
-                Re-Calculate Shifts
+              <button className="card-btn" onClick={() => setShow(!show)}>
+                {show ? "Hide Calendar" : "Show Calendar"}
               </button>
               <button className="card-btn" onClick={shiftSave}>
                 Save Shifts
               </button>
-              <button className="card-btn" onClick={handleToogle}>
-                {isOpen ? "Hide" : "Show"}
-                {isOpen ? (
-                  <LuArrowDown className="text-base" />
-                ) : (
-                  <LuArrowUp className="text-base" />
-                )}
-              </button>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 md:gap-6 mt-5">
-              {isOpen &&
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-3 md:gap-6 mt-5">
+              {!show &&
                 events.length > 0 &&
                 allUsers.map((user, index) => (
-                  <div key={index} className="flex items-center gap-3">
-                    <div
-                      className={`w-2 md:w-2 h-3 md:h-5 ${
-                        user.workType === "part-time"
-                          ? "bg-yellow-500"
-                          : user.team === "sozialarbeiter"
-                          ? "bg-primary"
-                          : "bg-red-500"
-                      } rounded-full`}
-                    />
-                    <div className="text-xs md:text-[14px] text-gray-500 text-center">
-                      <p className="text-sm md:text-[15px] text-black font-semibold capitalize">
-                        {user.name}
-                      </p>
-                      <p className="ml-2 capitalize">{user.team}</p>
+                  <div
+                    key={index}
+                    className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 p-4 border rounded-lg shadow-sm bg-white"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-2 h-5 rounded-full ${
+                          user.team === "sozialbetreuerhelfer"
+                            ? "bg-yellow-500"
+                            : user.team === "sozialarbeiter"
+                            ? "bg-primary"
+                            : "bg-red-500"
+                        }`}
+                      />
+                      <div>
+                        <p className="text-sm md:text-base font-semibold text-black capitalize">
+                          {user.name}
+                        </p>
+                        <p className="capitalize ">{user.team}</p>
+                      </div>
                     </div>
 
-                    {<StatisticBar events={events} user={user} />}
+                    <div className="flex flex-row gap-2 flex-wrap">
+                      <button
+                        disabled={handleDisable(user, "morning")}
+                        onClick={() => {
+                          const updated = [...allUsers];
+                          updated[index].shiftChoice = "morning";
+                          setAllUsers(updated);
+                        }}
+                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                          user?.shiftChoice === "morning"
+                            ? "bg-yellow-400 text-white"
+                            : "border border-red-400 text-black"
+                        }`}
+                      >
+                        Früh
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          const updated = [...allUsers];
+                          updated[index].shiftChoice = false;
+                          setAllUsers(updated);
+                        }}
+                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                          !user.shiftChoice
+                            ? "bg-blue-400 text-white"
+                            : "border border-red-400 text-black"
+                        }`}
+                      >
+                        Egal
+                      </button>
+
+                      <button
+                        disabled={handleDisable(user, "night")}
+                        onClick={() => {
+                          const updated = [...allUsers];
+                          updated[index].shiftChoice = "night";
+                          setAllUsers(updated);
+                        }}
+                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                          user?.shiftChoice === "night"
+                            ? "bg-purple-400 text-white"
+                            : "border border-red-400 text-black"
+                        }`}
+                      >
+                        Spät
+                      </button>
+                    </div>
+
+                    <div className="w-full min-w-[210px] md:w-auto">
+                      <StatisticBar events={events} user={user} />
+                    </div>
                   </div>
                 ))}
             </div>
+
             <div className="mt-4">
-              {events?.length > 0 && selectedDay && (
+              {events?.length > 0 && selectedDay && show && (
                 <ShiftCalendar
                   events={events}
                   setEvents={setEvents}
