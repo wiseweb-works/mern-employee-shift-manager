@@ -2,7 +2,7 @@ const ToggleSwitch = ({ editMode, setEditMode }) => {
   return (
     <div className="flex items-center space-x-3">
       <span className="text-sm text-gray-700">
-        {!editMode ? "View Mode" : "Edit Mode"}
+        {!editMode ? "Ansichtsmodus" : "Bearbeitungsmodus"}
       </span>
 
       <button

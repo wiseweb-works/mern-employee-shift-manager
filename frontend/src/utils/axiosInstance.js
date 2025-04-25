@@ -33,10 +33,12 @@ axiosInstance.interceptors.response.use(
       if (error.response.status === 401) {
         window.location.href = "/login";
       } else if (error.response.status === 500) {
-        toast.error("Server Error. Please try again later.");
+        toast.error("Serverfehler. Bitte versuchen Sie es später erneut.");
       }
     } else if (error.code === "ECONNABORTED") {
-      toast.error("Request timed out. Please try again.");
+      toast.error(
+        "Zeitüberschreitung der Anfrage. Bitte versuchen Sie es erneut."
+      );
     }
     return Promise.reject(error);
   }

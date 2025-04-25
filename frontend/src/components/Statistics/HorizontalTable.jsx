@@ -1,4 +1,4 @@
-import moment from "moment";
+import moment from "moment-timezone";
 
 const DAYS = ["", "Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"];
 

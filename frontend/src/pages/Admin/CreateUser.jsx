@@ -18,17 +18,17 @@ const CreateUsers = () => {
     e.preventDefault();
 
     if (!validateEmail(email)) {
-      toast.error("Please enter a valid email address");
+      toast.error("Bitte geben Sie eine gültige E-Mail-Adresse ein");
       return;
     }
 
     if (!name) {
-      toast.error("Please enter full name");
+      toast.error("Bitte geben Sie den vollständigen Namen ein");
       return;
     }
 
     if (!password) {
-      toast.error("Please enter the password");
+      toast.error("Bitte geben Sie das Passwort ein");
       return;
     }
 
@@ -49,19 +49,21 @@ const CreateUsers = () => {
       if (error.response && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(
+          "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
+        );
       }
     }
   };
 
   return (
-    <DashboardLayout activeMenu="Create User">
+    <DashboardLayout activeMenu="Benutzer erstellen">
       <div className="lg:w-[80%] h-auto md:h-full m-auto mt-10 md:mt-0 flex flex-col justify-center">
         <h3 className="text-xl font-semibold text-black">
-          Create a Team Members
+          Teammitglied erstellen
         </h3>
         <p className="text-sx text-slate-700 mt-[5px] mb-6">
-          Please enter his/her details
+          Bitte geben Sie die Details ein
         </p>
 
         <form onSubmit={handleSignUp}>
@@ -69,23 +71,23 @@ const CreateUsers = () => {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              label="Full Name"
-              placeholder="John Doe"
+              label="Vollständiger Name"
+              placeholder="Max Mustermann"
               type="text"
             />
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              label="Email Address"
-              placeholder="john@example.com"
+              label="E-Mail-Adresse"
+              placeholder="max@beispiel.de"
               type="text"
             />
 
             <Input
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              label="Password"
-              placeholder="Min 8 Characters"
+              label="Passwort"
+              placeholder="Mind. 8 Zeichen"
               type="password"
             />
 
@@ -97,7 +99,7 @@ const CreateUsers = () => {
                   onChange={(e) => setTeam(e.target.value)}
                   className="w-full bg-transparent outline-none"
                 >
-                  <option value="">Please Select</option>
+                  <option value="">Bitte auswählen</option>
                   <option value="sozialbetreuer">Sozialbetreuer</option>
                   <option value="sozialarbeiter">Sozialarbeiter</option>
                   <option value="sozialbetreuerhelfer">
@@ -109,7 +111,7 @@ const CreateUsers = () => {
           </div>
 
           <button type="submit" className="btn-primary">
-            SIGN UP
+            REGISTRIEREN
           </button>
         </form>
       </div>

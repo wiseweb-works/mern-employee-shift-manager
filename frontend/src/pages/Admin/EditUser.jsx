@@ -33,7 +33,7 @@ const EditUser = () => {
         setIsActive(user.isActive);
       }
     } catch (error) {
-      toast.error("Error fetching user:", error);
+      toast.error("Fehler beim Abrufen des Benutzers:", error);
     } finally {
       setLoading(false);
     }
@@ -44,21 +44,21 @@ const EditUser = () => {
     setLoading(true);
 
     if (!name) {
-      toast.error("Please enter full name");
+      toast.error("Bitte geben Sie den vollständigen Namen ein");
       return;
     }
 
     if (!validateEmail(email)) {
-      toast.error("Please enter a valid email address");
+      toast.error("Bitte geben Sie eine gültige E-Mail-Adresse ein");
       return;
     }
 
     if (!team) {
-      toast.error("Please select a valid Team");
+      toast.error("Bitte wählen Sie ein gültiges Team aus");
       return;
     }
     if (!workType) {
-      toast.error("Please select a valid Work Type");
+      toast.error("Bitte wählen Sie eine gültige Arbeitsart aus");
       return;
     }
 
@@ -81,7 +81,9 @@ const EditUser = () => {
       if (error.response && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
-        toast.error("Something went wrong. Please try again.");
+        toast.error(
+          "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
+        );
       }
     } finally {
       setLoading(false);
@@ -98,15 +100,15 @@ const EditUser = () => {
       <div className="lg:w-[80%] h-auto md:h-full m-auto mt-10 md:mt-0 flex flex-col justify-center">
         <div className="flex justify-between">
           <h3 className="text-xl font-semibold text-black">
-            Edit a Team Member
+            Teammitglied bearbeiten
           </h3>
           <Link to="/admin/users" className="card-btn">
             <LuArrowLeft className="text-base text-red-500" />
-            Turn Back!
+            Zurück!
           </Link>
         </div>
         <p className="text-sx text-slate-700 mt-[5px] mb-6">
-          Please correct her/him details
+          Bitte korrigieren Sie die Angaben dieser Person
         </p>
 
         <form onSubmit={handleUpdate}>
@@ -114,15 +116,15 @@ const EditUser = () => {
             <Input
               value={name}
               onChange={(e) => setName(e.target.value)}
-              label="Full Name"
-              placeholder="John Doe"
+              label="Vollständiger Name"
+              placeholder="Max Mustermann"
               type="text"
             />
             <Input
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              label="Email Address"
-              placeholder="john@example.com"
+              label="E-Mail-Adresse"
+              placeholder="max@beispiel.de"
               type="text"
             />
 
@@ -134,7 +136,7 @@ const EditUser = () => {
                   onChange={(e) => setTeam(e.target.value)}
                   className="w-full bg-transparent outline-none"
                 >
-                  <option value="">Please Select</option>
+                  <option value="">Bitte auswählen</option>
                   <option value="sozialbetreuer">Sozialbetreuer</option>
                   <option value="sozialarbeiter">Sozialarbeiter</option>
                   <option value="sozialbetreuerhelfer">
@@ -145,38 +147,40 @@ const EditUser = () => {
             </div>
 
             <div>
-              <label className="text-[13px] text-slate-800">Work Type</label>
+              <label className="text-[13px] text-slate-800">Arbeitsart</label>
               <div className="input-box">
                 <select
                   value={workType}
                   onChange={(e) => setWorkType(e.target.value)}
                   className="w-full bg-transparent outline-none"
                 >
-                  <option value="">Please Select</option>
-                  <option value="full-time">Full-Time</option>
-                  <option value="part-time">Part-Time</option>
+                  <option value="">Bitte auswählen</option>
+                  <option value="full-time">Vollzeit</option>
+                  <option value="part-time">Teilzeit</option>
                 </select>
               </div>
             </div>
           </div>
 
           <div>
-            <label className="text-[13px] text-slate-800">Active User</label>
+            <label className="text-[13px] text-slate-800">
+              Aktiver Benutzer
+            </label>
             <div className="input-box">
               <select
                 value={isActive}
                 onChange={(e) => setIsActive(e.target.value)}
                 className="w-full bg-transparent outline-none"
               >
-                <option value="">Please Select</option>
-                <option value={true}>Active</option>
-                <option value={false}>Deactive</option>
+                <option value="">Bitte auswählen</option>
+                <option value={true}>Aktiv</option>
+                <option value={false}>Inaktiv</option>
               </select>
             </div>
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            UPDATE USER
+            BENUTZER AKTUALISIEREN
           </button>
         </form>
       </div>

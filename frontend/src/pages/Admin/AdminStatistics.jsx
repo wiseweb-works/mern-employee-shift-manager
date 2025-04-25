@@ -6,7 +6,6 @@ import AdminShiftTable from "../../components/Statistics/AdminShiftTable";
 import { getNextMonth, getPreviousMonth } from "../../utils/helper";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import { FaPrint } from "react-icons/fa";
 import toast from "react-hot-toast";
 
@@ -24,8 +23,8 @@ const AdminStatistics = () => {
         const formattedShiftDataArray = result.data.shifts.map((shift) => ({
           ...shift,
           id: shift._id,
-          start: formatToLocalTime(shift.start),
-          end: formatToLocalTime(shift.end),
+          start: moment(shift.start).tz("Europe/Berlin").format(),
+          end: moment(shift.end).tz("Europe/Berlin").format(),
           title: shift.employee.name,
           calendarId:
             shift.employee.workType === "part-time"
@@ -73,14 +72,14 @@ const AdminStatistics = () => {
   }, [selectedMonth]);
 
   return (
-    <DashboardLayout activeMenu="View Statistics">
+    <DashboardLayout activeMenu="Statistiken anzeigen">
       <div className="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="col-span-1 md:col-span-3 bg-white rounded-2xl shadow-md p-4">
           <h2 className="text-xl font-semibold mb-4">
-            Monthly Shift Summary:
+            Monatliche Schichtübersicht:
             <span className="text-red-500">
               {" "}
-              {moment(selectedMonth).format("MM/yyyy")}
+              {moment(selectedMonth).format("MM/YYYY")}
             </span>
           </h2>
           <div className="flex flex-col md:flex-row justify-between gap-4">
@@ -88,32 +87,32 @@ const AdminStatistics = () => {
               <FaChevronLeft
                 size={40}
                 className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full shadow transition"
-                aria-label="Left"
+                aria-label="Links"
               />
             </button>
 
             <div className="bg-yellow-100 rounded-2xl p-4 shadow-md flex-3 ">
-              <p className="text-lg font-medium">Morning Shifts</p>
+              <p className="text-lg font-medium">Frühschichten</p>
               <p className="text-3xl font-bold text-yellow-600">
                 {
                   events.filter((event) =>
-                    String(event.start).endsWith("08:00")
+                    String(event.start).endsWith("08:00:00+02:00")
                   ).length
                 }
               </p>
             </div>
             <div className="bg-blue-100 rounded-2xl p-4 shadow-md flex-3 ">
-              <p className="text-lg font-medium">Total Shift</p>
+              <p className="text-lg font-medium">Gesamte Schichten</p>
               <p className="text-3xl font-bold text-blue-600">
                 {events.length}
               </p>
             </div>
             <div className="bg-purple-100 rounded-2xl p-4 shadow-md flex-3">
-              <p className="text-lg font-medium">Night Shifts</p>
+              <p className="text-lg font-medium">Spätschichten</p>
               <p className="text-3xl font-bold text-purple-600">
                 {
                   events.filter((event) =>
-                    String(event.start).endsWith("13:30")
+                    String(event.start).endsWith("13:30:00+02:00")
                   ).length
                 }
               </p>
@@ -122,7 +121,7 @@ const AdminStatistics = () => {
               <FaChevronRight
                 size={40}
                 className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full shadow transition"
-                aria-label="Right"
+                aria-label="Rechts"
               />
             </button>
           </div>
@@ -130,10 +129,10 @@ const AdminStatistics = () => {
         <div className="print-area col-span-1 md:col-span-3 bg-white rounded-2xl shadow-md p-4 overflow-auto print:overflow-visible">
           <div className="flex flex-row justify-between">
             <h2 className="text-xl font-semibold mb-4">
-              Monthly Shift Chart{" "}
+              Monatliche Schichtübersicht{" "}
               <span className="text-red-500">
                 {" "}
-                {moment(selectedMonth).format("MM/yyyy")}
+                {moment(selectedMonth).format("MM/YYYY")}
               </span>
             </h2>
             <button

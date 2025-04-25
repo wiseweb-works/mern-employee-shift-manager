@@ -22,7 +22,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
         setAllUsers(response.data.users);
       }
     } catch (error) {
-      toast.error("Error fetchin users:", error);
+      toast.error("Fehler beim Abrufen der Benutzer:", error);
     }
   };
 
@@ -62,7 +62,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
         }
       );
       if (response.status === 200) {
-        toast.success("User Updated");
+        toast.success("Benutzer aktualisiert");
         setModalOpen(false);
         window.location.reload();
       }
@@ -72,7 +72,9 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
   };
 
   const handleDelete = async (shiftId) => {
-    const isConfirmed = window.confirm("Are you sure to delete this Shift?");
+    const isConfirmed = window.confirm(
+      "Sind Sie sicher, dass Sie diese Schicht löschen möchten?"
+    );
 
     if (isConfirmed) {
       try {
@@ -84,7 +86,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
           window.location.reload();
         }
       } catch (error) {
-        toast.error("Error deleting shifts:", error);
+        toast.error("Fehler beim Löschen der Schichten:", error);
       }
     }
   };
@@ -95,7 +97,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
     <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md relative">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Edit Shift</h2>
+          <h2 className="text-xl font-semibold">Schicht bearbeiten</h2>
           <button
             onClick={() => setModalOpen(false)}
             className="text-gray-500 hover:text-gray-800 text-xl"
@@ -123,20 +125,20 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
                 onClick={() => handleDelete(initialData._id)}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
               >
-                Delete
+                Löschen
               </button>
             </div>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-600">
-              Employee
+              Mitarbeiter
             </label>
             <select
               value={employee}
               onChange={(e) => setEmployee(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             >
-              <option value="">Please Select</option>
+              <option value="">Bitte auswählen</option>
               {allUsers &&
                 allUsers
                   .filter((user) => user.isActive)
@@ -150,7 +152,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-600">
-              Date Time
+              Datum
             </label>
             <input
               type="date"
@@ -163,22 +165,22 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-600">
-              Shifts
+              Schicht
             </label>
             <select
               value={shift}
               onChange={(e) => setShift(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
             >
-              <option value="morning">Morning (08:00 - 16:30)</option>
-              <option value="night">Night (13:30 - 22:00)</option>
+              <option value="morning">Frühschicht (08:00 - 16:30)</option>
+              <option value="night">Spätschicht (13:30 - 22:00)</option>
             </select>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-600">
-                Start
+                Beginn
               </label>
               <input
                 type="text"
@@ -189,7 +191,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-600">
-                End
+                Ende
               </label>
               <input
                 type="text"
@@ -202,14 +204,14 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-600">
-              Notes
+              Notizen
             </label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
               className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
               rows={3}
-              placeholder="(Optional) Please write something..."
+              placeholder="(Optional) Bitte schreiben Sie etwas..."
             ></textarea>
           </div>
 
@@ -219,13 +221,13 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
               onClick={() => setModalOpen(false)}
               className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
             >
-              Close
+              Schließen
             </button>
             <button
               type="submit"
               className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
             >
-              Update Shift
+              Schicht aktualisieren
             </button>
           </div>
         </form>

@@ -15,7 +15,7 @@ const DashboardLayout = ({ children, activeMenu }) => {
           <div className={`max-[1080px]:hidden ${show ? "" : "hidden"}`}>
             <SideMenu activeMenu={activeMenu} />
           </div>
-          <div className="relative">
+          <div className="relative max-[1080px]:hidden">
             <button
               onClick={() => setShow(!show)}
               className={`fixed top-[8rem] ${

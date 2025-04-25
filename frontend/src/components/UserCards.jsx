@@ -8,7 +8,9 @@ import toast from "react-hot-toast";
 const UserCard = ({ userInfo }) => {
   const navigate = useNavigate();
   const handleDelete = async (userId) => {
-    const isConfirmed = window.confirm("Are you sure to delete this User?");
+    const isConfirmed = window.confirm(
+      "Sind Sie sicher, dass Sie diesen Benutzer löschen möchten?"
+    );
 
     if (isConfirmed) {
       try {
@@ -19,7 +21,7 @@ const UserCard = ({ userInfo }) => {
           window.location.reload();
         }
       } catch (error) {
-        toast.error("Error deleting users:", error);
+        toast.error("Fehler beim Löschen des Benutzers:", error);
       }
     }
   };
@@ -49,7 +51,7 @@ const UserCard = ({ userInfo }) => {
           >
             <MdEdit className="text-lg" />
             <span className="hidden group-hover:block transition duration-200 ease-in-out">
-              Edit User
+              Benutzer bearbeiten
             </span>
           </button>
           <button
@@ -58,7 +60,7 @@ const UserCard = ({ userInfo }) => {
           >
             <MdDelete className="text-lg" />
             <span className="hidden group-hover:block transition duration-200 ease-in-out">
-              Delete User
+              Benutzer löschen
             </span>
           </button>
         </div>
@@ -86,7 +88,7 @@ const UserCard = ({ userInfo }) => {
           } bg-gray-50 px-4 py-0.5 rounded`}
         >
           <span className="text-[12px] font-semibold capitalize">
-            {userInfo?.workType}
+            {userInfo?.workType === "full-time" ? "Vollzeit" : "Teilzeit"}
           </span>
         </div>
         <div
@@ -95,7 +97,7 @@ const UserCard = ({ userInfo }) => {
           }  bg-gray-50 px-4 py-0.5 rounded`}
         >
           <span className="text-[12px] font-semibold capitalize">
-            {userInfo?.isActive ? `Active` : "Deactive"}
+            {userInfo?.isActive ? `Aktiv` : "Inaktiv"}
           </span>
         </div>
       </div>

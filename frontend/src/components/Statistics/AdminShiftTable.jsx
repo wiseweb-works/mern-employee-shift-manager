@@ -51,7 +51,7 @@ const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
         >
           <TbFileOrientation className="text-lg" />
         </button>
-        <span className="select-boxx">{`Count: ${
+        <span className="select-boxx">{`Anzahl: ${
           handleFilter()?.length
         }`}</span>
         <select
@@ -69,18 +69,18 @@ const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
           onChange={(e) => setWorkFilter(e.target.value)}
           value={workFilter}
         >
-          <option value="all">Work Type</option>
-          <option value="full-time">Full-Time</option>
-          <option value="part-time">Part-Time</option>
+          <option value="all">Arbeitsart</option>
+          <option value="full-time">Vollzeit</option>
+          <option value="part-time">Teilzeit</option>
         </select>
         <select
           className="select-boxx"
           onChange={(e) => setActiveFilter(e.target.value)}
           value={activeFilter}
         >
-          <option value="all">Active/Deactive</option>
-          <option value="active">Active</option>
-          <option value="deactive">Deactive</option>
+          <option value="all">Aktiv/Inaktiv</option>
+          <option value="active">Aktiv</option>
+          <option value="deactive">Inaktiv</option>
         </select>
         {(teamFilter !== "all" || workFilter !== "all") && (
           <button
@@ -88,7 +88,7 @@ const AdminShiftTable = ({ selectedMonth, users, filteredEvents }) => {
             onClick={handleReset}
           >
             <RiResetLeftFill className="text-lg" />
-            Reset
+            Zurücksetzen
           </button>
         )}
       </div>

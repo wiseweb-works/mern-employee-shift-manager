@@ -58,7 +58,7 @@ const DashboardCalendar = ({
     views: views,
     skipValidation: true,
     monthGridOptions: {
-      nEventsPerDay: 16,
+      nEventsPerDay: 18,
     },
     dayBoundaries: {
       start: "07:00",

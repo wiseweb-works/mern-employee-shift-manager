@@ -1,11 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import DashboardLayout from "../../components/DashboardLayout";
 import { UserContext } from "../../context/UserContext";
-import moment from "moment";
+import moment from "moment-timezone";
 import { IoIosCloseCircleOutline } from "react-icons/io";
 import axiosInstance from "../../utils/axiosInstance";
 import { API_PATH } from "../../utils/apiPath";
-import { formatToLocalTime } from "../../utils/formatToLocalTime";
 import UserCalendar from "../../components/Calendars/UserCalendar";
 import toast from "react-hot-toast";
 
@@ -21,8 +20,8 @@ const UserDashboard = () => {
         const formattedShiftDataArray = result.data.shifts.map((shift) => ({
           ...shift,
           id: shift._id,
-          start: formatToLocalTime(shift.start),
-          end: formatToLocalTime(shift.end),
+          start: moment(shift.start).tz("Europe/Berlin").format(),
+          end: moment(shift.end).tz("Europe/Berlin").format(),
           title: shift.employee.name,
           calendarId:
             shift.employee.workType === "part-time"
@@ -56,7 +55,7 @@ const UserDashboard = () => {
                   : moment().hour() < 19
                   ? "Tag"
                   : "Abend"}{" "}
-                <span className="text-red-500">{user?.name ?? "User"}</span>
+                <span className="text-red-500">{user?.name ?? "Benutzer"}</span>
               </h2>
               <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
                 {moment().format("DD.MM.YYYY")}
@@ -77,7 +76,7 @@ const UserDashboard = () => {
         <div className="md:col-span-2">
           <div className="card">
             <div className="flex items-center justify-between">
-              <h5 className="text-lg">Recent Shifts</h5>
+              <h5 className="text-lg">Letzte Schichten</h5>
             </div>
             <div className="mt-4">
               {events?.length > 0 && <UserCalendar events={events} />}

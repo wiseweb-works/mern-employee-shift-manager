@@ -16,7 +16,7 @@ const CreateShifts = () => {
   const [show, setShow] = useState(false);
 
   const selectedDay = moment()
-    .add(1, "months")
+    .add(0, "months")
     .startOf("month")
     .format("YYYY-MM-DD");
 
@@ -30,7 +30,7 @@ const CreateShifts = () => {
 
   const shiftSave = async () => {
     const isConfirmed = window.confirm(
-      "This will delete the existing shifs and rewrite them as you choose!"
+      "Dadurch werden die bestehenden Schichten gelöscht und entsprechend Ihrer Auswahl neu geschrieben!"
     );
     if (isConfirmed) {
       try {
@@ -38,13 +38,19 @@ const CreateShifts = () => {
           API_PATH.SHIFTS.DELETE_SHIFTS_BY_MONTH(month, year)
         );
         if (deleteResponse.status === 200) {
-          await axiosInstance.post(API_PATH.SHIFTS.CREATE_SHIFTS, [
-            ...events.map((event) => ({
-              employee: event.uid,
-              start: event.start,
-              end: event.end,
-            })),
-          ]);
+          const response = await axiosInstance.post(
+            API_PATH.SHIFTS.CREATE_SHIFTS,
+            [
+              ...events.map((event) => ({
+                employee: event.uid,
+                start: moment.tz(event.start, "Europe/Berlin").utc().format(),
+                end: moment.tz(event.end, "Europe/Berlin").utc().format(),
+              })),
+            ]
+          );
+          if (response.status === 201) {
+            toast.success("Schichten wurden erfolgreich erstellt");
+          }
         }
       } catch (error) {
         toast.error(error);
@@ -57,7 +63,6 @@ const CreateShifts = () => {
       const result = await axiosInstance.get(API_PATH.USERS.GET_ALL_USERS);
       if (result.data?.users?.length > 0) {
         setAllUsers(result.data.users);
-        setEvents(createMockData(result.data.users, selectedDay));
       }
     } catch (error) {
       toast.error(error);
@@ -82,22 +87,30 @@ const CreateShifts = () => {
   };
 
   useEffect(() => {
-    setEvents(createMockData(allUsers, selectedDay));
+    const newEvents = createMockData(allUsers, selectedDay).map((event) => ({
+      ...event,
+      start: moment
+        .utc(event.start)
+        .tz("Europe/Berlin")
+        .format("YYYY-MM-DD HH:mm"),
+      end: moment.utc(event.end).tz("Europe/Berlin").format("YYYY-MM-DD HH:mm"),
+    }));
+    setEvents(newEvents);
     return () => {};
   }, [allUsers]);
 
   return (
-    <DashboardLayout activeMenu="Create Shifts">
+    <DashboardLayout activeMenu="Schichten erstellen">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-4 md:my-6">
         <div className="md:col-span-2">
           <div className="card">
             <div className="flex items-center justify-between">
-              <h5 className="text-lg">Create Shifts</h5>
+              <h5 className="text-lg">Schichten erstellen</h5>
               <button className="card-btn" onClick={() => setShow(!show)}>
-                {show ? "Hide Calendar" : "Show Calendar"}
+                {show ? "Kalender ausblenden" : "Kalender anzeigen"}
               </button>
               <button className="card-btn" onClick={shiftSave}>
-                Save Shifts
+                Schichten speichern
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-3 md:gap-6 mt-5">
