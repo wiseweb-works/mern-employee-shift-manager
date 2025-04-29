@@ -10,11 +10,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@schedule-x/calendar": "^2.28.0",
-    "@schedule-x/drag-and-drop": "^2.28.0",
-    "@schedule-x/event-modal": "^2.28.0",
-    "@schedule-x/react": "^2.28.0",
-    "@schedule-x/theme-default": "^2.28.0",
+    "@schedule-x/calendar": "^2.29.0",
+    "@schedule-x/drag-and-drop": "^2.29.0",
+    "@schedule-x/event-modal": "^2.29.0",
+    "@schedule-x/react": "^2.29.0",
+    "@schedule-x/theme-default": "^2.29.0",
     "@tailwindcss/vite": "^4.1.4",
     "axios": "^1.9.0",
     "moment": "^2.30.1",
@@ -23,7 +23,7 @@
     "react-dom": "^19.1.0",
     "react-hot-toast": "^2.5.2",
     "react-icons": "^5.5.0",
-    "react-router": "^7.5.2",
+    "react-router": "^7.5.3",
     "recharts": "^2.15.3",
     "tailwindcss": "^4.1.4"
   },

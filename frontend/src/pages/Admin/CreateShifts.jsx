@@ -16,7 +16,7 @@ const CreateShifts = () => {
   const [show, setShow] = useState(false);
 
   const selectedDay = moment()
-    .add(0, "months")
+    .add(1, "months")
     .startOf("month")
     .format("YYYY-MM-DD");
 
