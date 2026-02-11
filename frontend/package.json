@@ -16,7 +16,7 @@
     "@schedule-x/react": "^3.5.0",
     "@schedule-x/theme-default": "^3.6.0",
     "@tailwindcss/vite": "^4.1.18",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "moment": "^2.30.1",
     "moment-timezone": "^0.6.0",
     "react": "^19.2.3",
