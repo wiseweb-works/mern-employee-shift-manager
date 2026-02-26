@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axiosInstance from "../utils/axiosInstance";
 import { API_PATH } from "../utils/apiPath";
 import toast from "react-hot-toast";
@@ -14,6 +14,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
   const [employee, setEmployee] = useState("");
   const [notes, setNotes] = useState("");
   const [allUsers, setAllUsers] = useState([]);
+  const modalRef = useRef(null);
 
   const getAllUsers = async () => {
     try {
@@ -42,6 +43,36 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
     }
   }, [initialData]);
 
+  // Focus trapping
+  useEffect(() => {
+    if (!modalOpen) return;
+
+    const handleKeyDown = (e) => {
+      if (e.key !== "Tab") return;
+
+      const focusableElements = modalRef.current.querySelectorAll(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          lastElement.focus();
+          e.preventDefault();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          firstElement.focus();
+          e.preventDefault();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [modalOpen]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!date) return;
@@ -59,7 +90,7 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
           start: startISO,
           end: endISO,
           notes,
-        }
+        },
       );
       if (response.status === 200) {
         toast.success("Benutzer aktualisiert");
@@ -73,13 +104,13 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
   const handleDelete = async (shiftId) => {
     const isConfirmed = window.confirm(
-      "Sind Sie sicher, dass Sie diese Schicht löschen möchten?"
+      "Sind Sie sicher, dass Sie diese Schicht löschen möchten?",
     );
 
     if (isConfirmed) {
       try {
         const response = await axiosInstance.delete(
-          API_PATH.SHIFTS.GET_SHIFTS_BY_ID(shiftId)
+          API_PATH.SHIFTS.GET_SHIFTS_BY_ID(shiftId),
         );
         if (response.status === 200) {
           setModalOpen(false);
@@ -94,13 +125,22 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
   if (!modalOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+    <div
+      ref={modalRef}
+      className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
       <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-md relative">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Schicht bearbeiten</h2>
+          <h2 id="modal-title" className="text-xl font-semibold">
+            Schicht bearbeiten
+          </h2>
           <button
             onClick={() => setModalOpen(false)}
-            className="text-gray-500 hover:text-gray-800 text-xl"
+            aria-label="Schließen"
+            className="text-gray-500 hover:text-gray-800 text-2xl focus:outline-none focus:ring-2 focus:ring-primary rounded-md p-1"
           >
             ×
           </button>
@@ -108,11 +148,15 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="edit-id"
+              className="block text-sm font-medium text-gray-600"
+            >
               ID
             </label>
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-between gap-2">
               <input
+                id="edit-id"
                 type="text"
                 name="id"
                 readOnly
@@ -123,20 +167,24 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
               <button
                 type="button"
                 onClick={() => handleDelete(initialData._id)}
-                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700"
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
               >
                 Löschen
               </button>
             </div>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="edit-employee"
+              className="block text-sm font-medium text-gray-600"
+            >
               Mitarbeiter
             </label>
             <select
+              id="edit-employee"
               value={employee}
               onChange={(e) => setEmployee(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
             >
               <option value="">Bitte auswählen</option>
               {allUsers &&
@@ -151,26 +199,34 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="edit-date"
+              className="block text-sm font-medium text-gray-600"
+            >
               Datum
             </label>
             <input
+              id="edit-date"
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               required
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="edit-shift"
+              className="block text-sm font-medium text-gray-600"
+            >
               Schicht
             </label>
             <select
+              id="edit-shift"
               value={shift}
               onChange={(e) => setShift(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
             >
               <option value="morning">Frühschicht (08:00 - 16:30)</option>
               <option value="night">Spätschicht (13:30 - 22:00)</option>
@@ -179,10 +235,14 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="edit-start"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Beginn
               </label>
               <input
+                id="edit-start"
                 type="text"
                 readOnly
                 value={shiftTimes[shift].start}
@@ -190,10 +250,14 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-600">
+              <label
+                htmlFor="edit-end"
+                className="block text-sm font-medium text-gray-600"
+              >
                 Ende
               </label>
               <input
+                id="edit-end"
                 type="text"
                 readOnly
                 value={shiftTimes[shift].end}
@@ -203,13 +267,17 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-600">
+            <label
+              htmlFor="edit-notes"
+              className="block text-sm font-medium text-gray-600"
+            >
               Notizen
             </label>
             <textarea
+              id="edit-notes"
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
-              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2"
+              className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:ring-2 focus:ring-indigo-500"
               rows={3}
               placeholder="(Optional) Bitte schreiben Sie etwas..."
             ></textarea>
@@ -219,13 +287,13 @@ const EditModal = ({ modalOpen, initialData, setModalOpen }) => {
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100"
+              className="px-4 py-2 rounded-md border border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-2 focus:ring-gray-300"
             >
               Schließen
             </button>
             <button
               type="submit"
-              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700"
+              className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Schicht aktualisieren
             </button>

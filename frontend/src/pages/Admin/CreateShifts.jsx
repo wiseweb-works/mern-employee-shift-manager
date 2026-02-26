@@ -30,12 +30,12 @@ const CreateShifts = () => {
 
   const shiftSave = async () => {
     const isConfirmed = window.confirm(
-      "Dadurch werden die bestehenden Schichten gelöscht und entsprechend Ihrer Auswahl neu geschrieben!"
+      "Dadurch werden die bestehenden Schichten gelöscht und entsprechend Ihrer Auswahl neu geschrieben!",
     );
     if (isConfirmed) {
       try {
         const deleteResponse = await axiosInstance.delete(
-          API_PATH.SHIFTS.DELETE_SHIFTS_BY_MONTH(month, year)
+          API_PATH.SHIFTS.DELETE_SHIFTS_BY_MONTH(month, year),
         );
         if (deleteResponse.status === 200) {
           const response = await axiosInstance.post(
@@ -46,7 +46,7 @@ const CreateShifts = () => {
                 start: moment.tz(event.start, "Europe/Berlin").utc().format(),
                 end: moment.tz(event.end, "Europe/Berlin").utc().format(),
               })),
-            ]
+            ],
           );
           if (response.status === 201) {
             toast.success("Schichten wurden erfolgreich erstellt");
@@ -77,10 +77,10 @@ const CreateShifts = () => {
   const handleDisable = (input, shift) => {
     const team = allUsers.filter((user) => user.team === input.team);
     const morningTeam = team.filter(
-      (user) => user.shiftChoice === "morning"
+      (user) => user.shiftChoice === "morning",
     ).length;
     const nightTeam = team.filter(
-      (user) => user.shiftChoice === "night"
+      (user) => user.shiftChoice === "night",
     ).length;
     if (shift === "morning") return morningTeam === Math.ceil(team.length / 2);
     if (shift === "night") return nightTeam === Math.ceil(team.length / 2);
@@ -127,8 +127,8 @@ const CreateShifts = () => {
                           user.team === "sozialbetreuerhelfer"
                             ? "bg-yellow-500"
                             : user.team === "sozialarbeiter"
-                            ? "bg-primary"
-                            : "bg-red-500"
+                              ? "bg-primary"
+                              : "bg-red-500"
                         }`}
                       />
                       <div>
@@ -139,7 +139,11 @@ const CreateShifts = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-row gap-2 flex-wrap">
+                    <div
+                      className="flex flex-row gap-2 flex-wrap"
+                      role="group"
+                      aria-label={`Schichtwahl für ${user.name}`}
+                    >
                       <button
                         disabled={handleDisable(user, "morning")}
                         onClick={() => {
@@ -147,7 +151,8 @@ const CreateShifts = () => {
                           updated[index].shiftChoice = "morning";
                           setAllUsers(updated);
                         }}
-                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                        aria-pressed={user?.shiftChoice === "morning"}
+                        className={`min-w-17.5 px-3 py-2 text-sm rounded-md font-medium shadow focus:ring-2 focus:ring-primary ${
                           user?.shiftChoice === "morning"
                             ? "bg-yellow-400 text-white"
                             : "border border-red-400 text-black"
@@ -162,7 +167,8 @@ const CreateShifts = () => {
                           updated[index].shiftChoice = false;
                           setAllUsers(updated);
                         }}
-                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                        aria-pressed={!user.shiftChoice}
+                        className={`min-w-17.5 px-3 py-2 text-sm rounded-md font-medium shadow focus:ring-2 focus:ring-primary ${
                           !user.shiftChoice
                             ? "bg-blue-400 text-white"
                             : "border border-red-400 text-black"
@@ -178,7 +184,8 @@ const CreateShifts = () => {
                           updated[index].shiftChoice = "night";
                           setAllUsers(updated);
                         }}
-                        className={`min-w-[70px] px-3 py-2 text-sm rounded-md font-medium shadow ${
+                        aria-pressed={user?.shiftChoice === "night"}
+                        className={`min-w-17.5 px-3 py-2 text-sm rounded-md font-medium shadow focus:ring-2 focus:ring-primary ${
                           user?.shiftChoice === "night"
                             ? "bg-purple-400 text-white"
                             : "border border-red-400 text-black"
@@ -188,7 +195,7 @@ const CreateShifts = () => {
                       </button>
                     </div>
 
-                    <div className="w-full min-w-[210px] md:w-auto">
+                    <div className="w-full min-w-52.5 md:w-auto">
                       <StatisticBar events={events} user={user} />
                     </div>
                   </div>

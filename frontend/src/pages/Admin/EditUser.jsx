@@ -22,7 +22,7 @@ const EditUser = () => {
     setLoading(true);
     try {
       const response = await axiosInstance.get(
-        API_PATH.USERS.GET_USER_BY_ID(id)
+        API_PATH.USERS.GET_USER_BY_ID(id),
       );
       if (response.data) {
         const user = response.data;
@@ -71,7 +71,7 @@ const EditUser = () => {
           team,
           workType,
           isActive,
-        }
+        },
       );
 
       if (response.status == 200) {
@@ -82,7 +82,7 @@ const EditUser = () => {
         toast.error(error.response.data.message);
       } else {
         toast.error(
-          "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut."
+          "Etwas ist schief gelaufen. Bitte versuchen Sie es erneut.",
         );
       }
     } finally {
@@ -107,7 +107,7 @@ const EditUser = () => {
             Zurück!
           </Link>
         </div>
-        <p className="text-sx text-slate-700 mt-[5px] mb-6">
+        <p className="text-sx text-slate-700 mt-1.25 mb-6">
           Bitte korrigieren Sie die Angaben dieser Person
         </p>
 

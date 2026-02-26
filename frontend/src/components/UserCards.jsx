@@ -37,7 +37,7 @@ const UserCard = ({ userInfo }) => {
                 Math.floor(Math.random() * 100) + 1
               }`;
             }}
-            alt="avatar"
+            alt={`Profilbild von ${userInfo?.name}`}
           />
           <div>
             <p className="text-sm font-medium">{userInfo?.name}</p>
@@ -46,21 +46,23 @@ const UserCard = ({ userInfo }) => {
         </div>
         <div className="flex items-center justify-center gap-4 ">
           <button
-            className="flex md:flex download-btn group"
+            className="flex md:flex download-btn group focus:ring-2 focus:ring-primary"
             onClick={() => navigate(`${userInfo._id}`)}
+            aria-label={`Benutzer ${userInfo?.name} bearbeiten`}
           >
             <MdEdit className="text-lg" />
-            <span className="hidden group-hover:block transition duration-200 ease-in-out">
-              Benutzer bearbeiten
+            <span className="hidden group-hover:block transition duration-200 ease-in-out ml-1">
+              Bearbeiten
             </span>
           </button>
           <button
-            className="flex md:flex delete-btn group"
+            className="flex md:flex delete-btn group focus:ring-2 focus:ring-red-500"
             onClick={() => handleDelete(userInfo?._id)}
+            aria-label={`Benutzer ${userInfo?.name} löschen`}
           >
             <MdDelete className="text-lg" />
-            <span className="hidden group-hover:block transition duration-200 ease-in-out">
-              Benutzer löschen
+            <span className="hidden group-hover:block transition duration-200 ease-in-out ml-1">
+              Löschen
             </span>
           </button>
         </div>
@@ -76,7 +78,7 @@ const UserCard = ({ userInfo }) => {
               : "text-yellow-600"
           }  bg-gray-50 px-4 py-0.5 rounded`}
         >
-          <span className="text-[12px] font-semibold capitalize">
+          <span className="text-xs font-semibold capitalize">
             {userInfo?.team}
           </span>
         </div>
@@ -87,7 +89,7 @@ const UserCard = ({ userInfo }) => {
               : "text-orange-500"
           } bg-gray-50 px-4 py-0.5 rounded`}
         >
-          <span className="text-[12px] font-semibold capitalize">
+          <span className="text-xs font-semibold capitalize">
             {userInfo?.workType === "full-time" ? "Vollzeit" : "Teilzeit"}
           </span>
         </div>
@@ -96,7 +98,7 @@ const UserCard = ({ userInfo }) => {
             userInfo?.isActive ? `text-violet-500` : "text-pink-900"
           }  bg-gray-50 px-4 py-0.5 rounded`}
         >
-          <span className="text-[12px] font-semibold capitalize">
+          <span className="text-xs font-semibold capitalize">
             {userInfo?.isActive ? `Aktiv` : "Inaktiv"}
           </span>
         </div>

@@ -1,13 +1,17 @@
 const ToggleSwitch = ({ editMode, setEditMode }) => {
+  const switchId = `toggle-mode`;
   return (
     <div className="flex items-center space-x-3">
-      <span className="text-sm text-gray-700">
+      <span id={switchId} className="text-sm text-gray-700">
         {!editMode ? "Ansichtsmodus" : "Bearbeitungsmodus"}
       </span>
 
       <button
         onClick={() => setEditMode(!editMode)}
-        className={`w-14 h-8 flex items-center rounded-full p-1 duration-300 ${
+        role="switch"
+        aria-checked={editMode}
+        aria-labelledby={switchId}
+        className={`w-14 h-8 flex items-center rounded-full p-1 duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
           editMode ? "bg-green-500" : "bg-gray-300"
         }`}
       >

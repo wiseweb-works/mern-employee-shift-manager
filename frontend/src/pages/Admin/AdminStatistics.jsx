@@ -83,11 +83,14 @@ const AdminStatistics = () => {
             </span>
           </h2>
           <div className="flex flex-col md:flex-row justify-between gap-4">
-            <button onClick={handleLeftClick}>
+            <button
+              onClick={handleLeftClick}
+              aria-label="Vorheriger Monat"
+              className="focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full"
+            >
               <FaChevronLeft
                 size={40}
                 className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full shadow transition"
-                aria-label="Links"
               />
             </button>
 
@@ -117,11 +120,14 @@ const AdminStatistics = () => {
                 }
               </p>
             </div>
-            <button onClick={handleRightClick}>
+            <button
+              onClick={handleRightClick}
+              aria-label="Nächster Monat"
+              className="focus:outline-none focus:ring-2 focus:ring-gray-400 rounded-full"
+            >
               <FaChevronRight
                 size={40}
                 className="p-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-full shadow transition"
-                aria-label="Rechts"
               />
             </button>
           </div>
@@ -137,7 +143,8 @@ const AdminStatistics = () => {
             </h2>
             <button
               onClick={() => window.print()}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow"
+              aria-label="Übersicht drucken"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-full shadow focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
             >
               <FaPrint />
             </button>

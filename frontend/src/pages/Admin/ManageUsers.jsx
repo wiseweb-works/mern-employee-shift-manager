@@ -67,41 +67,45 @@ const ManageUsers = () => {
           <h2 className="text-xl md:text-xl font-medium">Teammitglieder</h2>
 
           <div className="flex flex-col sm:flex-row gap-2">
-            <span className="select-boxx">{`Anzahl: ${
+            <span className="select-boxx" aria-live="polite">{`Anzahl: ${
               handleFilter()?.length
             }`}</span>
             <select
-              className="select-boxx"
+              className="select-boxx focus:ring-2 focus:ring-primary"
               onChange={(e) => setTeamFilter(e.target.value)}
               value={teamFilter}
+              aria-label="Nach Team filtern"
             >
-              <option value="all">Team</option>
+              <option value="all">Alle Teams</option>
               <option value="sozialarbeiter">Sozialarbeiter</option>
               <option value="sozialbetreuer">Sozialbetreuer</option>
               <option value="sozialbetreuerhelfer">Sozialbetreuerhelfer</option>
             </select>
             <select
-              className="select-boxx"
+              className="select-boxx focus:ring-2 focus:ring-primary"
               onChange={(e) => setWorkFilter(e.target.value)}
               value={workFilter}
+              aria-label="Nach Arbeitsart filtern"
             >
-              <option value="all">Arbeitsart</option>
+              <option value="all">Alle Arbeitsarten</option>
               <option value="full-time">Vollzeit</option>
               <option value="part-time">Teilzeit</option>
             </select>
             <select
-              className="select-boxx"
+              className="select-boxx focus:ring-2 focus:ring-primary"
               onChange={(e) => setActiveFilter(e.target.value)}
               value={activeFilter}
+              aria-label="Nach Status filtern"
             >
-              <option value="all">Aktiv/Inaktiv</option>
+              <option value="all">Alle Status</option>
               <option value="active">Aktiv</option>
               <option value="deactive">Inaktiv</option>
             </select>
             {(teamFilter !== "all" || workFilter !== "all") && (
               <button
-                className="flex md:flex download-btn shadow-sm"
+                className="flex md:flex download-btn shadow-sm focus:ring-2 focus:ring-primary"
                 onClick={handleReset}
+                aria-label="Filter zurücksetzen"
               >
                 <RiResetLeftFill className="text-lg" />
                 Zurücksetzen

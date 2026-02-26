@@ -25,7 +25,7 @@ const Dashboard = () => {
       try {
         const response = await axiosInstance.put(
           API_PATH.SHIFTS.UPDATE_SHIFTS(updated._id),
-          { start: updated.start, end: updated.end }
+          { start: updated.start, end: updated.end },
         );
         if (response?.status === 200) {
           toast.success("Schicht erfolgreich aktualisiert");
@@ -84,8 +84,8 @@ const Dashboard = () => {
                 {moment().hour() < 12
                   ? "Morgen"
                   : moment().hour() < 19
-                  ? "Tag"
-                  : "Abend"}{" "}
+                    ? "Tag"
+                    : "Abend"}{" "}
                 <span className="text-red-500">{user?.name ?? "Benutzer"}</span>
               </h2>
               <p className="text-xs md:text-[13px] text-gray-400 mt-1.5">
@@ -94,7 +94,8 @@ const Dashboard = () => {
             </div>
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-3 bg-gradient-to-r from-red-400 to-red-600 text-white rounded-full shadow-md hover:shadow-lg hover:brightness-105 transition-all duration-300 ease-out"
+              aria-label="Willkommensnachricht schließen"
+              className="p-3 bg-linear-to-r from-red-400 to-red-600 text-white rounded-full shadow-md hover:shadow-lg hover:brightness-105 transition-all duration-300 ease-out focus:ring-2 focus:ring-red-400 focus:ring-offset-2"
             >
               <IoIosCloseCircleOutline className="text-2xl" />
             </button>
@@ -109,11 +110,12 @@ const Dashboard = () => {
               <h5 className="text-lg">Letzte Schichten</h5>
               <div>
                 <select
-                  className="select-boxx"
+                  className="select-boxx focus:ring-2 focus:ring-primary"
                   onChange={(e) => setTeamFilter(e.target.value)}
                   value={teamFilter}
+                  aria-label="Nach Team filtern"
                 >
-                  <option value="all">Team</option>
+                  <option value="all">Alle Teams</option>
                   <option value="sozialarbeiter">Sozialarbeiter</option>
                   <option value="sozialbetreuer">Sozialbetreuer</option>
                   <option value="sozialbetreuerhelfer">

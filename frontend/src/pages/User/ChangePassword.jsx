@@ -34,7 +34,7 @@ const ChangePassword = () => {
         {
           password,
           newPassword,
-        }
+        },
       );
       if (response.status === 200) {
         handleLogout();
@@ -60,7 +60,7 @@ const ChangePassword = () => {
             Ändern Sie Ihr Passwort
           </h3>
         </div>
-        <p className="text-sx text-slate-700 mt-[5px] mb-6">
+        <p className="text-sx text-slate-700 mt-1.25 mb-6">
           Bitte geben Sie Ihr altes und neues Passwort ein.
         </p>
 

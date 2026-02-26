@@ -13,7 +13,7 @@ const AuthLayout = ({ children }) => {
         <p className="text-white text-2xl md:text-4xl font-semibold tracking-wide leading-snug drop-shadow-md">
           SCHICHTVERWALTUNGS-APP
         </p>
-        <img src={UI} alt="ui-img" />
+        <img src={UI} alt="" />
       </div>
     </div>
   );
