@@ -61,6 +61,13 @@ const getShiftById = async (req, res) => {
       return res.status(404).json({ message: "Shift not found" });
     }
 
+    if (
+      req.user.role !== "admin" &&
+      shift.employee._id.toString() !== req.user._id.toString()
+    ) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+
     res.json(shift);
   } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });

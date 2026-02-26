@@ -12,7 +12,7 @@ const generateToken = (userId) => {
 
 const registerUser = async (req, res) => {
   try {
-    const { name, email, password, team, role, workType } = req.body;
+    const { name, email, password, team, workType } = req.body;
 
     const userExists = await User.findOne({ email });
 
@@ -29,7 +29,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       team,
       workType,
-      role,
+      role: "employee",
     });
 
     res.status(201).json({
